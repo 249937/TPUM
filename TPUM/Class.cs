@@ -10,5 +10,10 @@
         {
             return 0;
         }
+
+        public bool C()
+        {
+            return false;
+        }
     }
 }

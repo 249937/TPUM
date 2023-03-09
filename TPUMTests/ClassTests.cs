@@ -19,5 +19,12 @@ namespace TPUMTests
             Class c = new Class();
             Assert.AreEqual(0, c.B());
         }
+
+        [TestMethod]
+        public void TestC()
+        {
+            Class c = new Class();
+            Assert.IsFalse(c.C());
+        }
     }
 }
