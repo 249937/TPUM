@@ -3,11 +3,11 @@ using TPUM.Data;
 
 namespace TPUM.Logic
 {
-    internal abstract class ShopServiceAbstract
+    public abstract class ShopServiceAbstract
     {
         private class ShopService : ShopServiceAbstract
         {
-            private readonly IProductRepository _productRepository;
+            private readonly ProductRepositoryAbstract _productRepository;
 
 
             public ShopService()
