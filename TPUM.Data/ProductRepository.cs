@@ -5,20 +5,20 @@ namespace TPUM.Data
 {
     internal class ProductRepository : IProductRepository
     {
-        private List<IProduct> products;
+        private List<ProductAbstract> products;
 
         public ProductRepository()
         {
-            products = new List<IProduct>();
+            products = new List<ProductAbstract>();
         }
 
-        public void Add(IProduct product)
+        public void Add(ProductAbstract product)
         {
             if (product == null)
             {
                 throw new ArgumentNullException();
             }
-            foreach (IProduct existingProduct in products)
+            foreach (ProductAbstract existingProduct in products)
             {
                 if (existingProduct.GetGuid() == product.GetGuid())
                 {
@@ -28,13 +28,13 @@ namespace TPUM.Data
             products.Add(product);
         }
 
-        public IProduct Get(Guid productGuid)
+        public ProductAbstract Get(Guid productGuid)
         {
             if (Guid.Empty.Equals(productGuid))
             {
                 throw new ArgumentException();
             }
-            foreach (IProduct product in products)
+            foreach (ProductAbstract product in products)
             {
                 if (product.GetGuid() == productGuid)
                 {
@@ -44,7 +44,7 @@ namespace TPUM.Data
             return null;
         }
 
-        public List<IProduct> GetAll()
+        public List<ProductAbstract> GetAll()
         {
             return products;
         }

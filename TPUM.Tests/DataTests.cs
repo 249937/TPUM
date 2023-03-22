@@ -11,7 +11,7 @@ namespace TPUM.Tests
         public void ProductGuidTest()
         {
             Guid guid = Guid.NewGuid();
-            IProduct product = new Product(guid);
+            ProductAbstract product = new Product(guid);
             Assert.AreEqual(guid, product.GetGuid());
             Assert.AreEqual(guid, product.GetGuid());
         }
@@ -20,7 +20,7 @@ namespace TPUM.Tests
         public void ProductEmptyGuidTest()
         {
             Guid guid = Guid.Empty;
-            IProduct product = new Product(guid);
+            ProductAbstract product = new Product(guid);
             Guid returnedGuid = product.GetGuid();
             Assert.AreNotEqual(guid, returnedGuid);
             Assert.AreEqual(returnedGuid, product.GetGuid());
@@ -30,7 +30,7 @@ namespace TPUM.Tests
         public void ProductNameTest()
         {
             string productName = "Test Product";
-            IProduct product = new Product(Guid.NewGuid());
+            ProductAbstract product = new Product(Guid.NewGuid());
             product.SetName(productName);
             Assert.AreEqual(productName, product.GetName());
         }
@@ -38,21 +38,21 @@ namespace TPUM.Tests
         [TestMethod]
         public void ProductEmptyNameTest()
         {
-            IProduct product = new Product(Guid.NewGuid());
+            ProductAbstract product = new Product(Guid.NewGuid());
             Assert.ThrowsException<ArgumentException>(() => product.SetName(""));
         }
 
         [TestMethod]
         public void ProductWhiteSpaceNameTest()
         {
-            IProduct product = new Product(Guid.NewGuid());
+            ProductAbstract product = new Product(Guid.NewGuid());
             Assert.ThrowsException<ArgumentException>(() => product.SetName(" "));
         }
 
         [TestMethod]
         public void ProductNullNameTest()
         {
-            IProduct product = new Product(Guid.NewGuid());
+            ProductAbstract product = new Product(Guid.NewGuid());
             Assert.ThrowsException<ArgumentNullException>(() => product.SetName(null));
         }
 
@@ -60,7 +60,7 @@ namespace TPUM.Tests
         public void ProductPriceTest()
         {
             float price = 6.9f;
-            IProduct product = new Product(Guid.NewGuid());
+            ProductAbstract product = new Product(Guid.NewGuid());
             product.SetPrice(price);
             Assert.AreEqual(price, product.GetPrice());
         }
@@ -69,7 +69,7 @@ namespace TPUM.Tests
         public void ProductLargePriceTest()
         {
             float price = float.MaxValue;
-            IProduct product = new Product(Guid.NewGuid());
+            ProductAbstract product = new Product(Guid.NewGuid());
             product.SetPrice(price);
             Assert.AreEqual(price, product.GetPrice());
         }
@@ -78,7 +78,7 @@ namespace TPUM.Tests
         public void ProductSmallPriceTest()
         {
             float price = 0.01f;
-            IProduct product = new Product(Guid.NewGuid());
+            ProductAbstract product = new Product(Guid.NewGuid());
             product.SetPrice(price);
             Assert.AreEqual(price, product.GetPrice());
         }
@@ -86,14 +86,14 @@ namespace TPUM.Tests
         [TestMethod]
         public void ProductZeroPriceTest()
         {
-            IProduct product = new Product(Guid.NewGuid());
+            ProductAbstract product = new Product(Guid.NewGuid());
             Assert.ThrowsException<ArgumentOutOfRangeException>(() => product.SetPrice(0.0f));
         }
 
         [TestMethod]
         public void ProductNegativePriceTest()
         {
-            IProduct product = new Product(Guid.NewGuid());
+            ProductAbstract product = new Product(Guid.NewGuid());
             Assert.ThrowsException<ArgumentOutOfRangeException>(() => product.SetPrice(-1.0f));
         }
 
@@ -110,8 +110,8 @@ namespace TPUM.Tests
         public void ProductRepositoryAddAndGetTest()
         {
             IProductRepository productRepository = new ProductRepository();
-            IProduct product1 = new Product(Guid.NewGuid());
-            IProduct product2 = new Product(Guid.NewGuid());
+            ProductAbstract product1 = new Product(Guid.NewGuid());
+            ProductAbstract product2 = new Product(Guid.NewGuid());
             Assert.AreEqual(0, productRepository.GetAll().Count);
             Assert.AreEqual(null, productRepository.Get(product1.GetGuid()));
             productRepository.Add(product1);
@@ -134,8 +134,8 @@ namespace TPUM.Tests
         public void ProductRepositoryRemoveTest()
         {
             IProductRepository productRepository = new ProductRepository();
-            IProduct product1 = new Product(Guid.NewGuid());
-            IProduct product2 = new Product(Guid.NewGuid());
+            ProductAbstract product1 = new Product(Guid.NewGuid());
+            ProductAbstract product2 = new Product(Guid.NewGuid());
             Assert.AreEqual(0, productRepository.GetAll().Count);
             Assert.AreEqual(null, productRepository.Get(product1.GetGuid()));
             productRepository.Add(product1);

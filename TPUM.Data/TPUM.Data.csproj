@@ -41,9 +41,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="IProduct.cs" />
     <Compile Include="IProductRepository.cs" />
     <Compile Include="Product.cs" />
+    <Compile Include="ProductAbstract.cs" />
     <Compile Include="ProductRepository.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

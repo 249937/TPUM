@@ -27,7 +27,7 @@ namespace TPUM.Logic
                 throw new ArgumentOutOfRangeException();
             }
 
-            IProduct product = null;
+            ProductAbstract product = null;
             product.SetName(name);
             product.SetPrice(price);
 

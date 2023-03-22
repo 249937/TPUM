@@ -5,9 +5,9 @@ namespace TPUM.Data
 {
     public interface IProductRepository
     {
-        void Add(IProduct product);
-        IProduct Get(Guid productGuid);
-        List<IProduct> GetAll();
+        void Add(ProductAbstract product);
+        ProductAbstract Get(Guid productGuid);
+        List<ProductAbstract> GetAll();
         void Remove(Guid productGuid);
     }
 }

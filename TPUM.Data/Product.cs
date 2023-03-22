@@ -2,13 +2,13 @@
 
 namespace TPUM.Data
 {
-    internal class Product : IProduct
+    internal class Product : ProductAbstract
     {
         private Guid guid;
         private string name;
         private float price;
 
-        public Product(Guid guid)
+        public Product(Guid guid) : base(guid)
         {
             if (!Guid.Empty.Equals(guid))
             {
@@ -20,17 +20,17 @@ namespace TPUM.Data
             }
         }
 
-        public Guid GetGuid()
+        public override Guid GetGuid()
         {
             return guid;
         }
 
-        public string GetName()
+        public override string GetName()
         {
             return name;
         }
 
-        public void SetName(string name)
+        public override void SetName(string name)
         {
             if (name == null)
             {
@@ -43,12 +43,12 @@ namespace TPUM.Data
             this.name = name;
         }
 
-        public float GetPrice()
+        public override float GetPrice()
         {
             return price;
         }
 
-        public void SetPrice(float price)
+        public override void SetPrice(float price)
         {
             if (price <= 0.0f)
             {
