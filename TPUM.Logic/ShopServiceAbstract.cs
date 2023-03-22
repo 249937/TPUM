@@ -5,15 +5,9 @@ namespace TPUM.Logic
 {
     public abstract class ShopServiceAbstract
     {
-        private class ShopService : ShopServiceAbstract
+        internal class ShopService : ShopServiceAbstract
         {
-            private readonly ProductRepositoryAbstract _productRepository;
-
-
-            public ShopService()
-            {
-                _productRepository = null;
-            }
+            public ShopService() { }
 
             public void AddProduct(string name, float price)
             {
@@ -34,7 +28,7 @@ namespace TPUM.Logic
                 product.SetName(name);
                 product.SetPrice(price);
 
-                _productRepository.Add(product);
+                ProductRepositoryAbstract.Instance.Add(product);
             }
 
             public void RemoveProduct(Guid productGuid)
@@ -43,7 +37,7 @@ namespace TPUM.Logic
                 {
                     throw new ArgumentException();
                 }
-                _productRepository.Remove(productGuid);
+                ProductRepositoryAbstract.Instance.Remove(productGuid);
             }
         }
     }

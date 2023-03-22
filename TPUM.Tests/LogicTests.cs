@@ -11,9 +11,7 @@ namespace TPUM.Tests
         [TestMethod]
         public void AddProductWithInvalidNameTest()
         {
-            ProductRepositoryAbstract productRepository = new ProductRepository();
-            IShopService shopService = new ShopService(productRepository);
-
+            ShopServiceAbstract.ShopService shopService = new ShopServiceAbstract.ShopService();
             string productName1 = "";
             string productName2 = null;
             float productPrice = 5.25f;
@@ -25,8 +23,7 @@ namespace TPUM.Tests
         [TestMethod]
         public void AddProductWithInvalidPrice()
         {
-            ProductRepositoryAbstract productRepository = new ProductRepository();
-            IShopService shopService = new ShopService(productRepository);
+            ShopServiceAbstract.ShopService shopService = new ShopServiceAbstract.ShopService();
 
             string productName = "Test Product";
             float productPrice1 = 0.00f;
@@ -39,18 +36,19 @@ namespace TPUM.Tests
         [TestMethod]
         public void AddAndRemoveTest()
         {
+            ShopServiceAbstract.ShopService shopService = new ShopServiceAbstract.ShopService();
+
             ProductRepositoryAbstract productRepository = new ProductRepository();
-            IShopService shopService = new ShopService(productRepository);
 
             string productName = "Test Product";
             float productPrice = 5.25f;
 
-            Assert.AreEqual(0, productRepository.GetAll().Count);
+            Assert.AreEqual(0, ProductRepositoryAbstract.Instance.GetAll().Count);
             shopService.AddProduct(productName, productPrice);
-            Assert.AreEqual(1, productRepository.GetAll().Count);
+            Assert.AreEqual(1, ProductRepositoryAbstract.Instance.GetAll().Count);
             
-            shopService.RemoveProduct(productRepository.GetAll()[0].GetGuid());
-            Assert.AreEqual(0, productRepository.GetAll().Count);
+            shopService.RemoveProduct(ProductRepositoryAbstract.Instance.GetAll()[0].GetGuid());
+            Assert.AreEqual(0, ProductRepositoryAbstract.Instance.GetAll().Count);
         }
     }
 }
