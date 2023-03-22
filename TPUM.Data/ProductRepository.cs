@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace TPUM.Data
 {
-    internal class ProductRepository : IProductRepository
+    internal class ProductRepository : ProductRepositoryAbstract
     {
         private List<ProductAbstract> products;
 
@@ -12,7 +12,7 @@ namespace TPUM.Data
             products = new List<ProductAbstract>();
         }
 
-        public void Add(ProductAbstract product)
+        public override void Add(ProductAbstract product)
         {
             if (product == null)
             {
@@ -28,7 +28,7 @@ namespace TPUM.Data
             products.Add(product);
         }
 
-        public ProductAbstract Get(Guid productGuid)
+        public override ProductAbstract Get(Guid productGuid)
         {
             if (Guid.Empty.Equals(productGuid))
             {
@@ -44,12 +44,12 @@ namespace TPUM.Data
             return null;
         }
 
-        public List<ProductAbstract> GetAll()
+        public override List<ProductAbstract> GetAll()
         {
             return products;
         }
 
-        public void Remove(Guid productGuid)
+        public override void Remove(Guid productGuid)
         {
             if (Guid.Empty.Equals(productGuid))
             {

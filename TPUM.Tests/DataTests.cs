@@ -100,7 +100,7 @@ namespace TPUM.Tests
         [TestMethod]
         public void ProductRepositoryEmptyTest()
         {
-            IProductRepository productRepository = new ProductRepository();
+            ProductRepositoryAbstract productRepository = new ProductRepository();
             Assert.AreEqual(0, productRepository.GetAll().Count);
             Assert.ThrowsException<ArgumentException>(() => productRepository.Get(Guid.Empty));
             Assert.AreEqual(null, productRepository.Get(Guid.NewGuid()));
@@ -109,7 +109,7 @@ namespace TPUM.Tests
         [TestMethod]
         public void ProductRepositoryAddAndGetTest()
         {
-            IProductRepository productRepository = new ProductRepository();
+            ProductRepositoryAbstract productRepository = new ProductRepository();
             ProductAbstract product1 = new Product(Guid.NewGuid());
             ProductAbstract product2 = new Product(Guid.NewGuid());
             Assert.AreEqual(0, productRepository.GetAll().Count);
@@ -133,7 +133,7 @@ namespace TPUM.Tests
         [TestMethod]
         public void ProductRepositoryRemoveTest()
         {
-            IProductRepository productRepository = new ProductRepository();
+            ProductRepositoryAbstract productRepository = new ProductRepository();
             ProductAbstract product1 = new Product(Guid.NewGuid());
             ProductAbstract product2 = new Product(Guid.NewGuid());
             Assert.AreEqual(0, productRepository.GetAll().Count);
@@ -168,7 +168,7 @@ namespace TPUM.Tests
         [TestMethod]
         public void ProductRepositoryEmptyRemoveTest()
         {
-            IProductRepository productRepository = new ProductRepository();
+            ProductRepositoryAbstract productRepository = new ProductRepository();
             Assert.AreEqual(0, productRepository.GetAll().Count);
             productRepository.Remove(Guid.NewGuid());
             Assert.AreEqual(0, productRepository.GetAll().Count);

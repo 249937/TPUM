@@ -11,7 +11,7 @@ namespace TPUM.Tests
         [TestMethod]
         public void AddProductWithInvalidNameTest()
         {
-            IProductRepository productRepository = new ProductRepository();
+            ProductRepositoryAbstract productRepository = new ProductRepository();
             IShopService shopService = new ShopService(productRepository);
 
             string productName1 = "";
@@ -25,7 +25,7 @@ namespace TPUM.Tests
         [TestMethod]
         public void AddProductWithInvalidPrice()
         {
-            IProductRepository productRepository = new ProductRepository();
+            ProductRepositoryAbstract productRepository = new ProductRepository();
             IShopService shopService = new ShopService(productRepository);
 
             string productName = "Test Product";
@@ -39,7 +39,7 @@ namespace TPUM.Tests
         [TestMethod]
         public void AddAndRemoveTest()
         {
-            IProductRepository productRepository = new ProductRepository();
+            ProductRepositoryAbstract productRepository = new ProductRepository();
             IShopService shopService = new ShopService(productRepository);
 
             string productName = "Test Product";

@@ -5,9 +5,9 @@ namespace TPUM.Logic
 {
     public class ShopService: IShopService
     {
-        private readonly IProductRepository _productRepository;
+        private readonly ProductRepositoryAbstract _productRepository;
 
-        public ShopService(IProductRepository productRepository)
+        public ShopService(ProductRepositoryAbstract productRepository)
         {
             _productRepository = productRepository;
         }
