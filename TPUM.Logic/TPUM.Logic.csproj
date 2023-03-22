@@ -41,9 +41,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="IShopService.cs" />
+    <Compile Include="Product.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ShopService.cs" />
+    <Compile Include="ShopServiceAbstract.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\TPUM.Data\TPUM.Data.csproj">
