@@ -2,7 +2,7 @@
 
 namespace TPUM.Data
 {
-    public class Product : IProduct
+    internal class Product : IProduct
     {
         private Guid guid;
         private string name;

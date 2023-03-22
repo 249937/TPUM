@@ -2,7 +2,7 @@
 using System;
 using TPUM.Data;
 
-namespace TPUMTests
+namespace TPUM.Tests
 {
     [TestClass]
     public class DataTests

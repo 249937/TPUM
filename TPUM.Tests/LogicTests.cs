@@ -3,7 +3,7 @@ using System;
 using TPUM.Data;
 using TPUM.Logic;
 
-namespace TPUMTests
+namespace TPUM.Tests
 {
     [TestClass]
     public class LogicTests

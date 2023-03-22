@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace TPUM.Data
 {
-    public class ProductRepository : IProductRepository
+    internal class ProductRepository : IProductRepository
     {
         private List<IProduct> products;
 
