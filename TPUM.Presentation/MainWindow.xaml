@@ -5,8 +5,17 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:TPUM.Presentation"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="MainWindow" Height="475" Width="835">
     <Grid>
-        
+        <TextBlock TextTrimming="CharacterEllipsis" Name="ProductNameTextBlock" Text="Product name: " TextWrapping="Wrap" Margin="40,40,674,375"/>
+        <TextBox Text="{Binding ProductNameInputText, UpdateSourceTrigger=PropertyChanged}" Name="NameTextBox" Margin="140,40,289,375"/>
+        <TextBlock TextTrimming="CharacterEllipsis" Name="ProductPriceTextBlock" Text="Product price: " TextWrapping="Wrap" Margin="43,77,665,339"/>
+        <TextBox Text="{Binding ProductPriceInputText, UpdateSourceTrigger=PropertyChanged}" Name="PriceTextBox" Margin="140,76,289,339"/>
+        <TextBlock TextTrimming="CharacterEllipsis" Name="GuidTextBlock" Text="GUID: " TextWrapping="Wrap" Margin="536,40,230,375"/>
+        <TextBox Text="{Binding ProductGuidInputText, UpdateSourceTrigger=PropertyChanged}" Name="GuidTextBox" Margin="586,40,21,375"/>
+        <Button Command="{Binding CommandAddProduct}" Margin="140,111,494,262" Content="Add Product" />
+        <Button Command="{Binding CommandFindProduct}" Margin="345,111,289,262" Content="Search product (by name)" />
+        <Button Command="{Binding CommandRemoveProduct}" Margin="600,106,35,267" Content="Remove product (by GUID)"/>
+        <TextBlock Text="{Binding OutputText, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" TextTrimming="CharacterEllipsis" Name="MessageTextBlock" TextWrapping="Wrap" Margin="40,198,40,40"/>
     </Grid>
 </Window>
