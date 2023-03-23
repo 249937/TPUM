@@ -1,6 +1,6 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
-using TPUM.Data;
+using System.Collections.Generic;
 using TPUM.Logic;
 
 namespace TPUM.Tests
@@ -34,21 +34,64 @@ namespace TPUM.Tests
         }
 
         [TestMethod]
-        public void AddAndRemoveTest()
+        public void AddFindRemoveTest()
         {
             ShopServiceAbstract.ShopService shopService = new ShopServiceAbstract.ShopService();
-
-            ProductRepositoryAbstract productRepository = new ProductRepository();
 
             string productName = "Test Product";
             float productPrice = 5.25f;
 
-            Assert.AreEqual(0, ProductRepositoryAbstract.Instance.GetAll().Count);
+            Product product = shopService.FindProduct(productName);
+            Assert.IsNull(product);
+
             shopService.AddProduct(productName, productPrice);
-            Assert.AreEqual(1, ProductRepositoryAbstract.Instance.GetAll().Count);
-            
-            shopService.RemoveProduct(ProductRepositoryAbstract.Instance.GetAll()[0].GetGuid());
-            Assert.AreEqual(0, ProductRepositoryAbstract.Instance.GetAll().Count);
+            product = shopService.FindProduct(productName);
+            Assert.IsNotNull(product);
+            Assert.AreEqual(productName, product.GetName());
+            Assert.AreEqual(productPrice, product.GetPrice());
+
+            product = shopService.FindProduct(productName);
+            Assert.IsNotNull(product);
+            Assert.AreEqual(productName, product.GetName());
+            Assert.AreEqual(productPrice, product.GetPrice());
+
+            shopService.RemoveProduct(product.GetGuid());
+            product = shopService.FindProduct(productName);
+            Assert.IsNull(product);
+        }
+
+        [TestMethod]
+        public void FindProductsTest()
+        {
+            ShopServiceAbstract.ShopService shopService = new ShopServiceAbstract.ShopService();
+
+            string product1Name = "Test Product 1";
+            float product1Price = 5.25f;
+            string product2Name = "Test Product 2";
+            float product2Price = 6.9f;
+
+            List<Product> products = shopService.FindProducts(product1Name);
+            Assert.AreEqual(0, products.Count);
+            products = shopService.FindProducts(product2Name);
+            Assert.AreEqual(0, products.Count);
+
+            shopService.AddProduct(product1Name, product1Price);
+            products = shopService.FindProducts(product1Name);
+            Assert.AreEqual(1, products.Count);
+            products = shopService.FindProducts(product2Name);
+            Assert.AreEqual(0, products.Count);
+
+            shopService.AddProduct(product2Name, product2Price);
+            products = shopService.FindProducts(product1Name);
+            Assert.AreEqual(1, products.Count);
+            products = shopService.FindProducts(product2Name);
+            Assert.AreEqual(1, products.Count);
+
+            shopService.AddProduct(product1Name, product1Price);
+            products = shopService.FindProducts(product1Name);
+            Assert.AreEqual(2, products.Count);
+            products = shopService.FindProducts(product2Name);
+            Assert.AreEqual(1, products.Count);
         }
     }
 }
