@@ -100,80 +100,80 @@ namespace TPUM.Tests
         [TestMethod]
         public void ProductRepositoryEmptyTest()
         {
-            ProductRepositoryAbstract productRepository = new ProductRepository();
-            Assert.AreEqual(0, productRepository.GetAll().Count);
-            Assert.ThrowsException<ArgumentException>(() => productRepository.Get(Guid.Empty));
-            Assert.AreEqual(null, productRepository.Get(Guid.NewGuid()));
+            ProductRepositoryAbstract.Instance.Clear();
+            Assert.AreEqual(0, ProductRepositoryAbstract.Instance.GetAll().Count);
+            Assert.ThrowsException<ArgumentException>(() => ProductRepositoryAbstract.Instance.Get(Guid.Empty));
+            Assert.AreEqual(null, ProductRepositoryAbstract.Instance.Get(Guid.NewGuid()));
         }
 
         [TestMethod]
         public void ProductRepositoryAddAndGetTest()
         {
-            ProductRepositoryAbstract productRepository = new ProductRepository();
+            ProductRepositoryAbstract.Instance.Clear();
             ProductAbstract product1 = new Product(Guid.NewGuid());
             ProductAbstract product2 = new Product(Guid.NewGuid());
-            Assert.AreEqual(0, productRepository.GetAll().Count);
-            Assert.AreEqual(null, productRepository.Get(product1.GetGuid()));
-            productRepository.Add(product1);
-            Assert.AreEqual(1, productRepository.GetAll().Count);
-            Assert.AreEqual(product1, productRepository.Get(product1.GetGuid()));
-            Assert.AreEqual(product1.GetGuid(), productRepository.Get(product1.GetGuid()).GetGuid());
-            productRepository.Add(product1);
-            Assert.AreEqual(1, productRepository.GetAll().Count);
-            Assert.AreEqual(product1, productRepository.Get(product1.GetGuid()));
-            Assert.AreEqual(product1.GetGuid(), productRepository.Get(product1.GetGuid()).GetGuid());
-            productRepository.Add(product2);
-            Assert.AreEqual(2, productRepository.GetAll().Count);
-            Assert.AreEqual(product1, productRepository.Get(product1.GetGuid()));
-            Assert.AreEqual(product2, productRepository.Get(product2.GetGuid()));
-            Assert.AreEqual(product1.GetGuid(), productRepository.Get(product1.GetGuid()).GetGuid());
-            Assert.AreEqual(product2.GetGuid(), productRepository.Get(product2.GetGuid()).GetGuid());
+            Assert.AreEqual(0, ProductRepositoryAbstract.Instance.GetAll().Count);
+            Assert.AreEqual(null, ProductRepositoryAbstract.Instance.Get(product1.GetGuid()));
+            ProductRepositoryAbstract.Instance.Add(product1);
+            Assert.AreEqual(1, ProductRepositoryAbstract.Instance.GetAll().Count);
+            Assert.AreEqual(product1, ProductRepositoryAbstract.Instance.Get(product1.GetGuid()));
+            Assert.AreEqual(product1.GetGuid(), ProductRepositoryAbstract.Instance.Get(product1.GetGuid()).GetGuid());
+            ProductRepositoryAbstract.Instance.Add(product1);
+            Assert.AreEqual(1, ProductRepositoryAbstract.Instance.GetAll().Count);
+            Assert.AreEqual(product1, ProductRepositoryAbstract.Instance.Get(product1.GetGuid()));
+            Assert.AreEqual(product1.GetGuid(), ProductRepositoryAbstract.Instance.Get(product1.GetGuid()).GetGuid());
+            ProductRepositoryAbstract.Instance.Add(product2);
+            Assert.AreEqual(2, ProductRepositoryAbstract.Instance.GetAll().Count);
+            Assert.AreEqual(product1, ProductRepositoryAbstract.Instance.Get(product1.GetGuid()));
+            Assert.AreEqual(product2, ProductRepositoryAbstract.Instance.Get(product2.GetGuid()));
+            Assert.AreEqual(product1.GetGuid(), ProductRepositoryAbstract.Instance.Get(product1.GetGuid()).GetGuid());
+            Assert.AreEqual(product2.GetGuid(), ProductRepositoryAbstract.Instance.Get(product2.GetGuid()).GetGuid());
         }
 
         [TestMethod]
         public void ProductRepositoryRemoveTest()
         {
-            ProductRepositoryAbstract productRepository = new ProductRepository();
+            ProductRepositoryAbstract.Instance.Clear();
             ProductAbstract product1 = new Product(Guid.NewGuid());
             ProductAbstract product2 = new Product(Guid.NewGuid());
-            Assert.AreEqual(0, productRepository.GetAll().Count);
-            Assert.AreEqual(null, productRepository.Get(product1.GetGuid()));
-            productRepository.Add(product1);
-            Assert.AreEqual(1, productRepository.GetAll().Count);
-            Assert.AreEqual(product1, productRepository.Get(product1.GetGuid()));
-            productRepository.Remove(product1.GetGuid());
-            Assert.AreEqual(0, productRepository.GetAll().Count);
-            Assert.AreEqual(null, productRepository.Get(product1.GetGuid()));
-            productRepository.Add(product1);
-            Assert.AreEqual(1, productRepository.GetAll().Count);
-            Assert.AreEqual(product1, productRepository.Get(product1.GetGuid()));
-            productRepository.Add(product2);
-            Assert.AreEqual(2, productRepository.GetAll().Count);
-            Assert.AreEqual(product1, productRepository.Get(product1.GetGuid()));
-            Assert.AreEqual(product2, productRepository.Get(product2.GetGuid()));
-            productRepository.Remove(product1.GetGuid());
-            Assert.AreEqual(1, productRepository.GetAll().Count);
-            Assert.AreEqual(null, productRepository.Get(product1.GetGuid()));
-            Assert.AreEqual(product2, productRepository.Get(product2.GetGuid()));
-            productRepository.Remove(product1.GetGuid());
-            Assert.AreEqual(1, productRepository.GetAll().Count);
-            Assert.AreEqual(null, productRepository.Get(product1.GetGuid()));
-            Assert.AreEqual(product2, productRepository.Get(product2.GetGuid()));
-            productRepository.Remove(product2.GetGuid());
-            Assert.AreEqual(0, productRepository.GetAll().Count);
-            Assert.AreEqual(null, productRepository.Get(product1.GetGuid()));
-            Assert.AreEqual(null, productRepository.Get(product2.GetGuid()));
+            Assert.AreEqual(0, ProductRepositoryAbstract.Instance.GetAll().Count);
+            Assert.AreEqual(null, ProductRepositoryAbstract.Instance.Get(product1.GetGuid()));
+            ProductRepositoryAbstract.Instance.Add(product1);
+            Assert.AreEqual(1, ProductRepositoryAbstract.Instance.GetAll().Count);
+            Assert.AreEqual(product1, ProductRepositoryAbstract.Instance.Get(product1.GetGuid()));
+            ProductRepositoryAbstract.Instance.Remove(product1.GetGuid());
+            Assert.AreEqual(0, ProductRepositoryAbstract.Instance.GetAll().Count);
+            Assert.AreEqual(null, ProductRepositoryAbstract.Instance.Get(product1.GetGuid()));
+            ProductRepositoryAbstract.Instance.Add(product1);
+            Assert.AreEqual(1, ProductRepositoryAbstract.Instance.GetAll().Count);
+            Assert.AreEqual(product1, ProductRepositoryAbstract.Instance.Get(product1.GetGuid()));
+            ProductRepositoryAbstract.Instance.Add(product2);
+            Assert.AreEqual(2, ProductRepositoryAbstract.Instance.GetAll().Count);
+            Assert.AreEqual(product1, ProductRepositoryAbstract.Instance.Get(product1.GetGuid()));
+            Assert.AreEqual(product2, ProductRepositoryAbstract.Instance.Get(product2.GetGuid()));
+            ProductRepositoryAbstract.Instance.Remove(product1.GetGuid());
+            Assert.AreEqual(1, ProductRepositoryAbstract.Instance.GetAll().Count);
+            Assert.AreEqual(null, ProductRepositoryAbstract.Instance.Get(product1.GetGuid()));
+            Assert.AreEqual(product2, ProductRepositoryAbstract.Instance.Get(product2.GetGuid()));
+            ProductRepositoryAbstract.Instance.Remove(product1.GetGuid());
+            Assert.AreEqual(1, ProductRepositoryAbstract.Instance.GetAll().Count);
+            Assert.AreEqual(null, ProductRepositoryAbstract.Instance.Get(product1.GetGuid()));
+            Assert.AreEqual(product2, ProductRepositoryAbstract.Instance.Get(product2.GetGuid()));
+            ProductRepositoryAbstract.Instance.Remove(product2.GetGuid());
+            Assert.AreEqual(0, ProductRepositoryAbstract.Instance.GetAll().Count);
+            Assert.AreEqual(null, ProductRepositoryAbstract.Instance.Get(product1.GetGuid()));
+            Assert.AreEqual(null, ProductRepositoryAbstract.Instance.Get(product2.GetGuid()));
         }
 
         [TestMethod]
         public void ProductRepositoryEmptyRemoveTest()
         {
-            ProductRepositoryAbstract productRepository = new ProductRepository();
-            Assert.AreEqual(0, productRepository.GetAll().Count);
-            productRepository.Remove(Guid.NewGuid());
-            Assert.AreEqual(0, productRepository.GetAll().Count);
-            Assert.ThrowsException<ArgumentException>(() => productRepository.Remove(Guid.Empty));
-            Assert.AreEqual(0, productRepository.GetAll().Count);
+            ProductRepositoryAbstract.Instance.Clear();
+            Assert.AreEqual(0, ProductRepositoryAbstract.Instance.GetAll().Count);
+            ProductRepositoryAbstract.Instance.Remove(Guid.NewGuid());
+            Assert.AreEqual(0, ProductRepositoryAbstract.Instance.GetAll().Count);
+            Assert.ThrowsException<ArgumentException>(() => ProductRepositoryAbstract.Instance.Remove(Guid.Empty));
+            Assert.AreEqual(0, ProductRepositoryAbstract.Instance.GetAll().Count);
         }
     }
 }

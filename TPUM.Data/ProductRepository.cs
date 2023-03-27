@@ -3,65 +3,101 @@ using System.Collections.Generic;
 
 namespace TPUM.Data
 {
-    internal class ProductRepository : ProductRepositoryAbstract
+    public abstract class ProductRepositoryAbstract
     {
-        private List<ProductAbstract> products;
-
-        public ProductRepository()
+        private class ProductRepository : ProductRepositoryAbstract
         {
-            products = new List<ProductAbstract>();
-        }
+            private List<ProductAbstract> products;
 
-        public override void Add(ProductAbstract product)
-        {
-            if (product == null)
+            public ProductRepository()
             {
-                throw new ArgumentNullException();
+                products = new List<ProductAbstract>();
             }
-            foreach (ProductAbstract existingProduct in products)
+
+            public override void Add(ProductAbstract product)
             {
-                if (existingProduct.GetGuid() == product.GetGuid())
+                if (product == null)
                 {
-                    return;
+                    throw new ArgumentNullException();
+                }
+                foreach (ProductAbstract existingProduct in products)
+                {
+                    if (existingProduct.GetGuid() == product.GetGuid())
+                    {
+                        return;
+                    }
+                }
+                products.Add(product);
+            }
+
+            public override ProductAbstract Get(Guid productGuid)
+            {
+                if (Guid.Empty.Equals(productGuid))
+                {
+                    throw new ArgumentException();
+                }
+                foreach (ProductAbstract product in products)
+                {
+                    if (product.GetGuid() == productGuid)
+                    {
+                        return product;
+                    }
+                }
+                return null;
+            }
+
+            public override List<ProductAbstract> GetAll()
+            {
+                return products;
+            }
+
+            public override void Remove(Guid productGuid)
+            {
+                if (Guid.Empty.Equals(productGuid))
+                {
+                    throw new ArgumentException();
+                }
+                for (int i = products.Count - 1; i >= 0; --i)
+                {
+                    if (productGuid.Equals(products[i].GetGuid()))
+                    {
+                        products.RemoveAt(i);
+                    }
                 }
             }
-            products.Add(product);
+
+            public override void Clear()
+            {
+                products.Clear();
+            }
         }
 
-        public override ProductAbstract Get(Guid productGuid)
+        private static ProductRepositoryAbstract instance;
+
+        protected ProductRepositoryAbstract()
         {
-            if (Guid.Empty.Equals(productGuid))
+        }
+
+        public static ProductRepositoryAbstract Instance
+        {
+            get
             {
-                throw new ArgumentException();
-            }
-            foreach (ProductAbstract product in products)
-            {
-                if (product.GetGuid() == productGuid)
+                if (instance == null)
                 {
-                    return product;
+                    instance = new ProductRepository();
                 }
+                return instance;
             }
-            return null;
         }
 
-        public override List<ProductAbstract> GetAll()
-        {
-            return products;
-        }
+        public abstract void Add(ProductAbstract product);
 
-        public override void Remove(Guid productGuid)
-        {
-            if (Guid.Empty.Equals(productGuid))
-            {
-                throw new ArgumentException();
-            }
-            for (int i = products.Count - 1; i >= 0; --i)
-            {
-                if (productGuid.Equals(products[i].GetGuid()))
-                {
-                    products.RemoveAt(i);
-                }
-            }
-        }
+        public abstract ProductAbstract Get(Guid productGuid);
+
+        public abstract List<ProductAbstract> GetAll();
+
+        public abstract void Remove(Guid productGuid);
+
+        public abstract void Clear();
     }
 }
