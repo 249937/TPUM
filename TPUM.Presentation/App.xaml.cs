@@ -1,6 +1,6 @@
 ﻿using System.Windows;
 
-namespace TPUM.Presentation
+namespace TPUM.Presentation.View
 {
     public partial class App : Application
     {

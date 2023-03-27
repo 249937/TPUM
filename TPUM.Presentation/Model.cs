@@ -1,14 +1,14 @@
 ﻿using TPUM.Logic;
 
-namespace TPUM.Presentation
+namespace TPUM.Presentation.Model
 {
-    internal class Model
+    internal class MainModel
     {
-        private readonly ShopServiceAbstract _shopService;
+        private readonly ShopServiceAbstract shopService;
 
-        internal Model(ShopServiceAbstract shopservice = null)
+        internal MainModel(ShopServiceAbstract shopService = null)
         {
-            _shopService = shopservice;
+            this.shopService = shopService;
         }
     }
 }

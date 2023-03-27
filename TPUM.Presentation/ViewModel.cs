@@ -1,9 +1,9 @@
 ﻿using System.ComponentModel;
 using System.Runtime.CompilerServices;
 
-namespace TPUM.Presentation
+namespace TPUM.Presentation.ViewModel
 {
-    internal class ViewModel : INotifyPropertyChanged
+    internal class MainViewModel : INotifyPropertyChanged
     {
         public RelayCommand CommandAddProduct 
         { 
@@ -95,7 +95,7 @@ namespace TPUM.Presentation
             }
         }
         
-        public ViewModel()
+        public MainViewModel()
         {
             CommandAddProduct = new RelayCommand(ExecuteCommandAddProduct);
             CommandRemoveProduct = new RelayCommand(ExecuteCommandRemoveProduct);
