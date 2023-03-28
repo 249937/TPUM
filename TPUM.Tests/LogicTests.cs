@@ -37,6 +37,7 @@ namespace TPUM.Tests
         [TestMethod]
         public void AddFindRemoveTest()
         {
+            ShopServiceAbstract.Instance.Clear();
             string productName = "Test Product";
             float productPrice = 5.25f;
 

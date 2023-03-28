@@ -51,6 +51,7 @@
   <ItemGroup>
     <Compile Include="DataTests.cs" />
     <Compile Include="LogicTests.cs" />
+    <Compile Include="PresentationModelTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -64,6 +65,10 @@
     <ProjectReference Include="..\TPUM.Logic\TPUM.Logic.csproj">
       <Project>{5138662f-27c6-499c-a697-80684aaa71ef}</Project>
       <Name>TPUM.Logic</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\TPUM.Presentation\TPUM.Presentation.csproj">
+      <Project>{181c7de3-aa24-49cd-92dd-389bf1b2210e}</Project>
+      <Name>TPUM.Presentation</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets" Condition="Exists('$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets')" />
