@@ -8,8 +8,13 @@ namespace TPUM.Logic
     {
         private class ShopService : ShopServiceAbstract
         {
+            public override event Action<ProductAbstract> OnProductAdded;
+            public override event Action<ProductAbstract> OnProductRemoved;
+
             public ShopService() 
             {
+                ProductRepositoryAbstract.Instance.OnProductAdded += HandleProductAdded;
+                ProductRepositoryAbstract.Instance.OnProductRemoved += HandleProductRemoved;
             }
 
             public override void AddProduct(string name, float price)
@@ -49,10 +54,7 @@ namespace TPUM.Logic
                 {
                     if (name.Equals(product.GetName()))
                     {
-                        Product productFound = new Product(product.GetGuid());
-                        productFound.SetName(product.GetName());
-                        productFound.SetPrice(product.GetPrice());
-                        return productFound;
+                        return new Product(product.GetGuid(), product.GetName(), product.GetPrice());
                     }
                 }
                 return null;
@@ -74,10 +76,7 @@ namespace TPUM.Logic
                 {
                     if (name.Equals(product.GetName()))
                     {
-                        Product productFound = new Product(product.GetGuid());
-                        productFound.SetName(product.GetName());
-                        productFound.SetPrice(product.GetPrice());
-                        productsFound.Add(productFound);
+                        productsFound.Add(new Product(product.GetGuid(), product.GetName(), product.GetPrice()));
                     }
                 }
                 return productsFound;
@@ -97,7 +96,20 @@ namespace TPUM.Logic
             {
                 ProductRepositoryAbstract.Instance.Clear();
             }
+
+            public void HandleProductAdded(Data.ProductAbstract product)
+            {
+                OnProductAdded?.Invoke(new Product(product.GetGuid(), product.GetName(), product.GetPrice()));
+            }
+
+            public void HandleProductRemoved(Data.ProductAbstract product)
+            {
+                OnProductRemoved?.Invoke(new Product(product.GetGuid(), product.GetName(), product.GetPrice()));
+            }
         }
+
+        public abstract event Action<ProductAbstract> OnProductAdded;
+        public abstract event Action<ProductAbstract> OnProductRemoved;
 
         private static ShopServiceAbstract instance;
 

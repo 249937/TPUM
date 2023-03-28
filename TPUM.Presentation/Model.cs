@@ -8,8 +8,13 @@ namespace TPUM.Presentation.Model
     {
         private class MainModel : MainModelAbstract
         {
+            public override event Action<ProductAbstract> OnProductAdded;
+            public override event Action<ProductAbstract> OnProductRemoved;
+
             public MainModel()
             {
+                ShopServiceAbstract.Instance.OnProductAdded += HandleProductAdded;
+                ShopServiceAbstract.Instance.OnProductRemoved += HandleProductRemoved;
             }
 
             public override void AddProduct(string name, float price)
@@ -47,12 +52,11 @@ namespace TPUM.Presentation.Model
                 }
 
                 Logic.ProductAbstract productFound = ShopServiceAbstract.Instance.FindProduct(name);
-                if (productFound == null) return null;
-                Presentation.Model.ProductAbstract product = new Presentation.Model.Product(productFound.GetGuid());
-
-                product.SetName(productFound.GetName());
-                product.SetPrice(productFound.GetPrice());
-                return product;
+                if (productFound == null)
+                {
+                    return null;
+                }
+                return new Product(productFound.GetGuid(), productFound.GetName(), productFound.GetPrice()); ;
             }
 
             public override List<ProductAbstract> FindProducts(string name)
@@ -63,10 +67,7 @@ namespace TPUM.Presentation.Model
                 {
                     if (name.Equals(product.GetName()))
                     {
-                        ProductAbstract productFound = new Product(product.GetGuid());
-                        productFound.SetName(product.GetName());
-                        productFound.SetPrice(product.GetPrice());
-                        productsFound.Add(productFound);
+                        productsFound.Add(new Product(product.GetGuid(), product.GetName(), product.GetPrice()));
                     }
                 }  
                 return productsFound;
@@ -76,7 +77,20 @@ namespace TPUM.Presentation.Model
             {
                 ShopServiceAbstract.Instance.RemoveProduct(productGuid);
             }
+
+            public void HandleProductAdded(Logic.ProductAbstract product)
+            {
+                OnProductAdded?.Invoke(new Product(product.GetGuid(), product.GetName(), product.GetPrice()));
+            }
+
+            public void HandleProductRemoved(Logic.ProductAbstract product)
+            {
+                OnProductRemoved?.Invoke(new Product(product.GetGuid(), product.GetName(), product.GetPrice()));
+            }
         }
+
+        public abstract event Action<ProductAbstract> OnProductAdded;
+        public abstract event Action<ProductAbstract> OnProductRemoved;
 
         private static MainModelAbstract instance;
 

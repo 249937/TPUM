@@ -7,6 +7,9 @@ namespace TPUM.Data
     {
         private class ProductRepository : ProductRepositoryAbstract
         {
+            public override event Action<ProductAbstract> OnProductAdded;
+            public override event Action<ProductAbstract> OnProductRemoved;
+
             private List<ProductAbstract> products;
 
             public ProductRepository()
@@ -28,6 +31,7 @@ namespace TPUM.Data
                     }
                 }
                 products.Add(product);
+                OnProductAdded?.Invoke(product);
             }
 
             public override ProductAbstract Get(Guid productGuid)
@@ -61,7 +65,9 @@ namespace TPUM.Data
                 {
                     if (productGuid.Equals(products[i].GetGuid()))
                     {
+                        ProductAbstract product = products[i];
                         products.RemoveAt(i);
+                        OnProductRemoved?.Invoke(product);
                     }
                 }
             }
@@ -71,6 +77,9 @@ namespace TPUM.Data
                 products.Clear();
             }
         }
+
+        public abstract event Action<ProductAbstract> OnProductAdded;
+        public abstract event Action<ProductAbstract> OnProductRemoved;
 
         private static ProductRepositoryAbstract instance;
 

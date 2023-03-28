@@ -25,9 +25,11 @@ namespace TPUM.Presentation.Model
         private string name;
         private float price;
 
-        public Product(Guid guid) : base(guid)
+        public Product(Guid guid, string name, float price) : base(guid)
         {
             this.guid = guid;
+            SetName(name);
+            SetPrice(price);
         }
 
         public override Guid GetGuid()

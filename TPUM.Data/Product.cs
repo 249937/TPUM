@@ -8,7 +8,7 @@ namespace TPUM.Data
         private string name;
         private float price;
 
-        public Product(Guid guid) : base(guid)
+        public Product(Guid guid, string name, float price) : base(guid)
         {
             if (!Guid.Empty.Equals(guid))
             {
@@ -18,6 +18,9 @@ namespace TPUM.Data
             {
                 this.guid = Guid.NewGuid();
             }
+
+            SetName(name);
+            SetPrice(price);
         }
 
         public override Guid GetGuid()

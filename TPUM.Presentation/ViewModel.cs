@@ -102,29 +102,40 @@ namespace TPUM.Presentation.ViewModel
         {
             CommandAddProduct = new RelayCommand(ExecuteCommandAddProduct);
             CommandRemoveProduct = new RelayCommand(ExecuteCommandRemoveProduct);
-            CommandFindProduct = new RelayCommand(ExecuteCommandFindProduct);
+            CommandFindProduct = new RelayCommand(ExecuteCommandFindProducts);
+            MainModelAbstract.Instance.OnProductAdded += HandleProductAdded;
+            MainModelAbstract.Instance.OnProductRemoved += HandleProductRemoved;
         }
+
+        public void HandleProductAdded(Model.ProductAbstract product)
+        {
+            OutputText = "ADDED: [Product] GUID: " + product.GetGuid() + ", Name: " + product.GetName() + ", Price: " + product.GetPrice();
+        }
+
+        public void HandleProductRemoved(Model.ProductAbstract product)
+        {
+            OutputText = "REMOVED: [Product] GUID: " + product.GetGuid() + ", Name: " + product.GetName() + ", Price: " + product.GetPrice();
+        }
+
         private void ExecuteCommandAddProduct()
         {
             MainModelAbstract.Instance.AddProduct(ProductNameInputText, float.Parse(ProductPriceInputText));
-            OutputText = "[Product] Name: " + ProductNameInputText + ", Price: " + ProductPriceInputText + " ADDED";
         }
 
         private void ExecuteCommandRemoveProduct()
         {
             MainModelAbstract.Instance.RemoveProduct(new Guid(ProductGuidInputText));
-            OutputText = "[Product] GUID: " + ProductGuidInputText + " REMOVED";
         }
 
-        private void ExecuteCommandFindProduct()
+        private void ExecuteCommandFindProducts()
         {
-            List<Model.ProductAbstract> xd = MainModelAbstract.Instance.FindProducts(ProductNameInputText);
+            List<Model.ProductAbstract> products = MainModelAbstract.Instance.FindProducts(ProductNameInputText);
             OutputText = "";
-            foreach (ProductAbstract product in xd)
+            foreach (Model.ProductAbstract product in products)
             {
                 string guid = (product.GetGuid()).ToString();
                 string price = (product.GetPrice()).ToString();
-                OutputText = OutputText + "[Product] GUID: " + guid + ", Name: " + product.GetName() + ", Price: " + price + "\n";
+                OutputText = OutputText + "FOUND: [Product] GUID: " + guid + ", Name: " + product.GetName() + ", Price: " + price + "\n";
             }
         }
     }
