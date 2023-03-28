@@ -8,7 +8,7 @@ namespace TPUM.Presentation.View
         public MainWindow()
         {
             InitializeComponent();
-            DataContext = new MainViewModel();
+            DataContext = MainViewModel.CreateViewModel();
         }
     }
 }

@@ -3,6 +3,7 @@ using System.Runtime.CompilerServices;
 using TPUM.Presentation.Model;
 using System;
 using System.Collections.Generic;
+using TPUM.Logic;
 
 namespace TPUM.Presentation.ViewModel
 {
@@ -97,14 +98,19 @@ namespace TPUM.Presentation.ViewModel
                 eventHandler(this, new PropertyChangedEventArgs(propertyName));
             }
         }
-        
-        public MainViewModel()
+
+        private MainModelAbstract model = null;
+
+        public MainViewModel(MainModelAbstract model)
         {
+            this.model = model;
+
             CommandAddProduct = new RelayCommand(ExecuteCommandAddProduct);
             CommandRemoveProduct = new RelayCommand(ExecuteCommandRemoveProduct);
             CommandFindProduct = new RelayCommand(ExecuteCommandFindProducts);
-            MainModelAbstract.Instance.OnProductAdded += HandleProductAdded;
-            MainModelAbstract.Instance.OnProductRemoved += HandleProductRemoved;
+
+            this.model.OnProductAdded += HandleProductAdded;
+            this.model.OnProductRemoved += HandleProductRemoved;
         }
 
         public void HandleProductAdded(Model.ProductAbstract product)
@@ -119,17 +125,17 @@ namespace TPUM.Presentation.ViewModel
 
         private void ExecuteCommandAddProduct()
         {
-            MainModelAbstract.Instance.AddProduct(ProductNameInputText, float.Parse(ProductPriceInputText));
+            model.AddProduct(ProductNameInputText, float.Parse(ProductPriceInputText));
         }
 
         private void ExecuteCommandRemoveProduct()
         {
-            MainModelAbstract.Instance.RemoveProduct(new Guid(ProductGuidInputText));
+            model.RemoveProduct(new Guid(ProductGuidInputText));
         }
 
         private void ExecuteCommandFindProducts()
         {
-            List<Model.ProductAbstract> products = MainModelAbstract.Instance.FindProducts(ProductNameInputText);
+            List<Model.ProductAbstract> products = model.FindProducts(ProductNameInputText);
             OutputText = "";
             foreach (Model.ProductAbstract product in products)
             {
@@ -137,6 +143,20 @@ namespace TPUM.Presentation.ViewModel
                 string price = (product.GetPrice()).ToString();
                 OutputText = OutputText + "FOUND: [Product] GUID: " + guid + ", Name: " + product.GetName() + ", Price: " + price + "\n";
             }
+        }
+
+        public static MainViewModel CreateViewModel()
+        {
+            return new MainViewModel(MainModelAbstract.CreateModel());
+        }
+
+        internal static MainViewModel CreateViewModel(MainModelAbstract model)
+        {
+            if (model == null)
+            {
+                return CreateViewModel();
+            }
+            return new MainViewModel(model);
         }
     }
 }

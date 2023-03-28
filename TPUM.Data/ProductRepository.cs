@@ -71,33 +71,10 @@ namespace TPUM.Data
                     }
                 }
             }
-
-            public override void Clear()
-            {
-                products.Clear();
-            }
         }
 
         public abstract event Action<ProductAbstract> OnProductAdded;
         public abstract event Action<ProductAbstract> OnProductRemoved;
-
-        private static ProductRepositoryAbstract instance;
-
-        protected ProductRepositoryAbstract()
-        {
-        }
-
-        public static ProductRepositoryAbstract Instance
-        {
-            get
-            {
-                if (instance == null)
-                {
-                    instance = new ProductRepository();
-                }
-                return instance;
-            }
-        }
 
         public abstract void Add(ProductAbstract product);
 
@@ -107,6 +84,9 @@ namespace TPUM.Data
 
         public abstract void Remove(Guid productGuid);
 
-        public abstract void Clear();
+        public static ProductRepositoryAbstract CreateProductRepository()
+        {
+            return new ProductRepository();
+        }
     }
 }

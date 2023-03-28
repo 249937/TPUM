@@ -11,10 +11,14 @@ namespace TPUM.Presentation.Model
             public override event Action<ProductAbstract> OnProductAdded;
             public override event Action<ProductAbstract> OnProductRemoved;
 
-            public MainModel()
+            private ShopServiceAbstract shopService = null;
+
+            public MainModel(ShopServiceAbstract shopService)
             {
-                ShopServiceAbstract.Instance.OnProductAdded += HandleProductAdded;
-                ShopServiceAbstract.Instance.OnProductRemoved += HandleProductRemoved;
+                this.shopService = shopService;
+
+                this.shopService.OnProductAdded += HandleProductAdded;
+                this.shopService.OnProductRemoved += HandleProductRemoved;
             }
 
             public override void AddProduct(string name, float price)
@@ -32,12 +36,7 @@ namespace TPUM.Presentation.Model
                     throw new ArgumentOutOfRangeException();
                 }
 
-                ShopServiceAbstract.Instance.AddProduct(name, price);
-            }
-
-            public override void Clear()
-            {
-                ShopServiceAbstract.Instance.Clear();
+                shopService.AddProduct(name, price);
             }
 
             public override ProductAbstract FindProduct(string name)
@@ -51,7 +50,7 @@ namespace TPUM.Presentation.Model
                     throw new ArgumentException();
                 }
 
-                Logic.ProductAbstract productFound = ShopServiceAbstract.Instance.FindProduct(name);
+                Logic.ProductAbstract productFound = shopService.FindProduct(name);
                 if (productFound == null)
                 {
                     return null;
@@ -62,7 +61,7 @@ namespace TPUM.Presentation.Model
             public override List<ProductAbstract> FindProducts(string name)
             {
                 List<ProductAbstract> productsFound = new List<ProductAbstract>();
-                List<Logic.ProductAbstract> productsFoundInLogicLayer = ShopServiceAbstract.Instance.FindProducts(name);
+                List<Logic.ProductAbstract> productsFoundInLogicLayer = shopService.FindProducts(name);
                 foreach (Logic.ProductAbstract product in productsFoundInLogicLayer)
                 {
                     if (name.Equals(product.GetName()))
@@ -75,7 +74,7 @@ namespace TPUM.Presentation.Model
 
             public override void RemoveProduct(Guid productGuid)
             {
-                ShopServiceAbstract.Instance.RemoveProduct(productGuid);
+                shopService.RemoveProduct(productGuid);
             }
 
             public void HandleProductAdded(Logic.ProductAbstract product)
@@ -92,24 +91,6 @@ namespace TPUM.Presentation.Model
         public abstract event Action<ProductAbstract> OnProductAdded;
         public abstract event Action<ProductAbstract> OnProductRemoved;
 
-        private static MainModelAbstract instance;
-
-        protected MainModelAbstract()
-        {
-        }
-
-        public static MainModelAbstract Instance
-        {
-            get
-            {
-                if (instance == null)
-                {
-                    instance = new MainModel();
-                }
-                return instance;
-            }
-        }
-
         public abstract void AddProduct(string name, float price);
 
         public abstract ProductAbstract FindProduct(string name);
@@ -118,7 +99,18 @@ namespace TPUM.Presentation.Model
 
         public abstract void RemoveProduct(Guid productGuid);
 
-        public abstract void Clear();
+        public static MainModelAbstract CreateModel()
+        {
+            return new MainModel(ShopServiceAbstract.CreateShopService());
+        }
 
+        internal static MainModelAbstract CreateShopService(ShopServiceAbstract shopService)
+        {
+            if (shopService == null)
+            {
+                return CreateModel();
+            }
+            return new MainModel(shopService);
+        }
     }
 }

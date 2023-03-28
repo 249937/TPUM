@@ -11,10 +11,14 @@ namespace TPUM.Logic
             public override event Action<ProductAbstract> OnProductAdded;
             public override event Action<ProductAbstract> OnProductRemoved;
 
-            public ShopService() 
+            private ProductRepositoryAbstract productRepository = null;
+
+            public ShopService(ProductRepositoryAbstract productRepository) 
             {
-                ProductRepositoryAbstract.Instance.OnProductAdded += HandleProductAdded;
-                ProductRepositoryAbstract.Instance.OnProductRemoved += HandleProductRemoved;
+                this.productRepository = productRepository;
+
+                this.productRepository.OnProductAdded += HandleProductAdded;
+                this.productRepository.OnProductRemoved += HandleProductRemoved;
             }
 
             public override void AddProduct(string name, float price)
@@ -36,7 +40,7 @@ namespace TPUM.Logic
                 product.SetName(name);
                 product.SetPrice(price);
 
-                ProductRepositoryAbstract.Instance.Add(product);
+                productRepository.Add(product);
             }
 
             public override ProductAbstract FindProduct(string name)
@@ -50,7 +54,7 @@ namespace TPUM.Logic
                     throw new ArgumentException();
                 }
 
-                foreach (ProductData product in ProductRepositoryAbstract.Instance.GetAll())
+                foreach (ProductData product in productRepository.GetAll())
                 {
                     if (name.Equals(product.GetName()))
                     {
@@ -72,7 +76,7 @@ namespace TPUM.Logic
                 }
 
                 List<ProductAbstract> productsFound = new List<ProductAbstract>();
-                foreach (ProductData product in ProductRepositoryAbstract.Instance.GetAll())
+                foreach (ProductData product in productRepository.GetAll())
                 {
                     if (name.Equals(product.GetName()))
                     {
@@ -89,12 +93,7 @@ namespace TPUM.Logic
                     throw new ArgumentException();
                 }
 
-                ProductRepositoryAbstract.Instance.Remove(productGuid);
-            }
-
-            public override void Clear()
-            {
-                ProductRepositoryAbstract.Instance.Clear();
+                productRepository.Remove(productGuid);
             }
 
             public void HandleProductAdded(Data.ProductAbstract product)
@@ -111,24 +110,6 @@ namespace TPUM.Logic
         public abstract event Action<ProductAbstract> OnProductAdded;
         public abstract event Action<ProductAbstract> OnProductRemoved;
 
-        private static ShopServiceAbstract instance;
-
-        protected ShopServiceAbstract()
-        {
-        }
-
-        public static ShopServiceAbstract Instance
-        {
-            get
-            {
-                if (instance == null)
-                {
-                    instance = new ShopService();
-                }
-                return instance;
-            }
-        }
-
         public abstract void AddProduct(string name, float price);
 
         public abstract ProductAbstract FindProduct(string name);
@@ -137,6 +118,18 @@ namespace TPUM.Logic
 
         public abstract void RemoveProduct(Guid productGuid);
 
-        public abstract void Clear();
+        public static ShopServiceAbstract CreateShopService()
+        {
+            return new ShopService(ProductRepositoryAbstract.CreateProductRepository());
+        }
+
+        internal static ShopServiceAbstract CreateShopService(ProductRepositoryAbstract productRepository)
+        {
+            if (productRepository == null)
+            {
+                return CreateShopService();
+            }
+            return new ShopService(productRepository);
+        }
     }
 }
