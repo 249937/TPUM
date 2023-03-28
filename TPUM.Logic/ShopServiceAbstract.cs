@@ -6,11 +6,13 @@ namespace TPUM.Logic
 {
     public abstract class ShopServiceAbstract
     {
-        internal class ShopService : ShopServiceAbstract
+        private class ShopService : ShopServiceAbstract
         {
-            public ShopService() { }
+            public ShopService() 
+            {
+            }
 
-            public void AddProduct(string name, float price)
+            public override void AddProduct(string name, float price)
             {
                 if (name == null)
                 {
@@ -25,14 +27,14 @@ namespace TPUM.Logic
                     throw new ArgumentOutOfRangeException();
                 }
 
-                Product product = new Product(Guid.NewGuid());
+                ProductData product = new ProductData(Guid.NewGuid());
                 product.SetName(name);
                 product.SetPrice(price);
 
                 ProductRepositoryAbstract.Instance.Add(product);
             }
 
-            public Product FindProduct(string name)
+            public override ProductAbstract FindProduct(string name)
             {
                 if (name == null)
                 {
@@ -43,7 +45,7 @@ namespace TPUM.Logic
                     throw new ArgumentException();
                 }
 
-                foreach (ProductAbstract product in ProductRepositoryAbstract.Instance.GetAll())
+                foreach (ProductData product in ProductRepositoryAbstract.Instance.GetAll())
                 {
                     if (name.Equals(product.GetName()))
                     {
@@ -56,7 +58,7 @@ namespace TPUM.Logic
                 return null;
             }
 
-            public List<Product> FindProducts(string name)
+            public override List<ProductAbstract> FindProducts(string name)
             {
                 if (name == null)
                 {
@@ -67,8 +69,8 @@ namespace TPUM.Logic
                     throw new ArgumentException();
                 }
 
-                List<Product> productsFound = new List<Product>();
-                foreach (ProductAbstract product in ProductRepositoryAbstract.Instance.GetAll())
+                List<ProductAbstract> productsFound = new List<ProductAbstract>();
+                foreach (ProductData product in ProductRepositoryAbstract.Instance.GetAll())
                 {
                     if (name.Equals(product.GetName()))
                     {
@@ -81,7 +83,7 @@ namespace TPUM.Logic
                 return productsFound;
             }
 
-            public void RemoveProduct(Guid productGuid)
+            public override void RemoveProduct(Guid productGuid)
             {
                 if (Guid.Empty.Equals(productGuid))
                 {
@@ -90,6 +92,39 @@ namespace TPUM.Logic
 
                 ProductRepositoryAbstract.Instance.Remove(productGuid);
             }
+
+            public override void Clear()
+            {
+                ProductRepositoryAbstract.Instance.Clear();
+            }
         }
+
+        private static ShopServiceAbstract instance;
+
+        protected ShopServiceAbstract()
+        {
+        }
+
+        public static ShopServiceAbstract Instance
+        {
+            get
+            {
+                if (instance == null)
+                {
+                    instance = new ShopService();
+                }
+                return instance;
+            }
+        }
+
+        public abstract void AddProduct(string name, float price);
+
+        public abstract ProductAbstract FindProduct(string name);
+
+        public abstract List<ProductAbstract> FindProducts(string name);
+
+        public abstract void RemoveProduct(Guid productGuid);
+
+        public abstract void Clear();
     }
 }

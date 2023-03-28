@@ -2,15 +2,15 @@
 
 namespace TPUM.Logic
 {
-    internal class Product : ProductAbstract
+    internal class ProductData : TPUM.Data.ProductAbstract
     {
         private Guid guid;
         private string name;
         private float price;
 
-        public Product(Guid guid) : base(guid)
+        public ProductData(Guid guid) : base(guid)
         {
-            this.guid= guid;
+            this.guid = guid;
         }
 
         public override Guid GetGuid()
