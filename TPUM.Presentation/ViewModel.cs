@@ -1,5 +1,8 @@
 ﻿using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using TPUM.Presentation.Model;
+using System;
+using System.Collections.Generic;
 
 namespace TPUM.Presentation.ViewModel
 {
@@ -103,17 +106,26 @@ namespace TPUM.Presentation.ViewModel
         }
         private void ExecuteCommandAddProduct()
         {
-            OutputText = "[Product] Name: " + ProductNameInputText + ", [Price]: " + ProductPriceInputText + " ADDED";
+            MainModelAbstract.Instance.AddProduct(ProductNameInputText, float.Parse(ProductPriceInputText));
+            OutputText = "[Product] Name: " + ProductNameInputText + ", Price: " + ProductPriceInputText + " ADDED";
         }
 
         private void ExecuteCommandRemoveProduct()
         {
+            MainModelAbstract.Instance.RemoveProduct(new Guid(ProductGuidInputText));
             OutputText = "[Product] GUID: " + ProductGuidInputText + " REMOVED";
         }
 
         private void ExecuteCommandFindProduct()
         {
-            OutputText = "[Product] Name: " + ProductNameInputText + " FOUND";
+            List<Model.ProductAbstract> xd = MainModelAbstract.Instance.FindProducts(ProductNameInputText);
+            OutputText = "";
+            foreach (ProductAbstract product in xd)
+            {
+                string guid = (product.GetGuid()).ToString();
+                string price = (product.GetPrice()).ToString();
+                OutputText = OutputText + "[Product] GUID: " + guid + ", Name: " + product.GetName() + ", Price: " + price + "\n";
+            }
         }
     }
 }
