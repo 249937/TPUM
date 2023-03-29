@@ -1,10 +1,10 @@
 ﻿using System.ComponentModel;
 using System.Runtime.CompilerServices;
-using TPUM.Presentation.Model;
+using TPUM.Client.Presentation.Model;
 using System;
 using System.Collections.Generic;
 
-namespace TPUM.Presentation.ViewModel
+namespace TPUM.Client.Presentation.ViewModel
 {
     internal class MainViewModel : INotifyPropertyChanged
     {

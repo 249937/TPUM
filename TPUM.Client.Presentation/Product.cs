@@ -1,7 +1,24 @@
 ﻿using System;
 
-namespace TPUM.Data
+namespace TPUM.Client.Presentation.Model
 {
+    public abstract class ProductAbstract
+    {
+        public ProductAbstract(Guid guid)
+        {
+        }
+
+        public abstract Guid GetGuid();
+        
+        public abstract string GetName();
+        
+        public abstract float GetPrice();
+        
+        public abstract void SetName(string name);
+        
+        public abstract void SetPrice(float price);
+    }
+
     internal class Product : ProductAbstract
     {
         private Guid guid;
@@ -10,15 +27,7 @@ namespace TPUM.Data
 
         public Product(Guid guid, string name, float price) : base(guid)
         {
-            if (!Guid.Empty.Equals(guid))
-            {
-                this.guid = guid;
-            }
-            else
-            {
-                this.guid = Guid.NewGuid();
-            }
-
+            this.guid = guid;
             SetName(name);
             SetPrice(price);
         }
@@ -33,6 +42,11 @@ namespace TPUM.Data
             return name;
         }
 
+        public override float GetPrice()
+        {
+            return price;
+        }
+
         public override void SetName(string name)
         {
             if (name == null)
@@ -44,11 +58,6 @@ namespace TPUM.Data
                 throw new ArgumentException();
             }
             this.name = name;
-        }
-
-        public override float GetPrice()
-        {
-            return price;
         }
 
         public override void SetPrice(float price)

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace TPUM.Data
+namespace TPUM.Client.Data
 {
     public abstract class ProductAbstract
     {

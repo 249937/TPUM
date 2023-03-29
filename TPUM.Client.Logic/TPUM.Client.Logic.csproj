@@ -4,11 +4,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{C05CF357-40A0-4164-8249-715C48634327}</ProjectGuid>
+    <ProjectGuid>{5138662F-27C6-499C-A697-80684AAA71EF}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>TPUM.Data</RootNamespace>
-    <AssemblyName>TPUM.Data</AssemblyName>
+    <RootNamespace>TPUM.Client.Logic</RootNamespace>
+    <AssemblyName>TPUM.Client.Logic</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
@@ -43,8 +43,15 @@
   <ItemGroup>
     <Compile Include="Product.cs" />
     <Compile Include="ProductAbstract.cs" />
-    <Compile Include="ProductRepository.cs" />
+    <Compile Include="ProductData.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ShopServiceAbstract.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\TPUM.Client.Data\TPUM.Client.Data.csproj">
+      <Project>{c05cf357-40a0-4164-8249-715c48634327}</Project>
+      <Name>TPUM.Client.Data</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

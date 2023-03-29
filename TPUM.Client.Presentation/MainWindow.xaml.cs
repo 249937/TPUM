@@ -1,5 +1,5 @@
 ﻿using System.Windows;
-using TPUM.Presentation.ViewModel;
+using TPUM.Client.Presentation.ViewModel;
 
 namespace TPUM.Presentation.View
 {

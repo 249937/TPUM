@@ -1,24 +1,24 @@
 ﻿using System;
 using System.Collections.Generic;
-using TPUM.Data;
+using TPUM.Client.Logic;
 
-namespace TPUM.Logic
+namespace TPUM.Client.Presentation.Model
 {
-    public abstract class ShopServiceAbstract
+    public abstract class MainModelAbstract
     {
-        private class ShopService : ShopServiceAbstract
+        private class MainModel : MainModelAbstract
         {
             public override event Action<ProductAbstract> OnProductAdded;
             public override event Action<ProductAbstract> OnProductRemoved;
 
-            private ProductRepositoryAbstract productRepository = null;
+            private ShopServiceAbstract shopService = null;
 
-            public ShopService(ProductRepositoryAbstract productRepository) 
+            public MainModel(ShopServiceAbstract shopService)
             {
-                this.productRepository = productRepository;
+                this.shopService = shopService;
 
-                this.productRepository.OnProductAdded += HandleProductAdded;
-                this.productRepository.OnProductRemoved += HandleProductRemoved;
+                this.shopService.OnProductAdded += HandleProductAdded;
+                this.shopService.OnProductRemoved += HandleProductRemoved;
             }
 
             public override void AddProduct(string name, float price)
@@ -36,11 +36,7 @@ namespace TPUM.Logic
                     throw new ArgumentOutOfRangeException();
                 }
 
-                ProductData product = new ProductData(Guid.NewGuid());
-                product.SetName(name);
-                product.SetPrice(price);
-
-                productRepository.Add(product);
+                shopService.AddProduct(name, price);
             }
 
             public override ProductAbstract FindProduct(string name)
@@ -54,54 +50,39 @@ namespace TPUM.Logic
                     throw new ArgumentException();
                 }
 
-                foreach (ProductData product in productRepository.GetAll())
+                Logic.ProductAbstract productFound = shopService.FindProduct(name);
+                if (productFound == null)
                 {
-                    if (name.Equals(product.GetName()))
-                    {
-                        return new Product(product.GetGuid(), product.GetName(), product.GetPrice());
-                    }
+                    return null;
                 }
-                return null;
+                return new Product(productFound.GetGuid(), productFound.GetName(), productFound.GetPrice()); ;
             }
 
             public override List<ProductAbstract> FindProducts(string name)
             {
-                if (name == null)
-                {
-                    throw new ArgumentNullException();
-                }
-                if (string.IsNullOrWhiteSpace(name))
-                {
-                    throw new ArgumentException();
-                }
-
                 List<ProductAbstract> productsFound = new List<ProductAbstract>();
-                foreach (ProductData product in productRepository.GetAll())
+                List<Logic.ProductAbstract> productsFoundInLogicLayer = shopService.FindProducts(name);
+                foreach (Logic.ProductAbstract product in productsFoundInLogicLayer)
                 {
                     if (name.Equals(product.GetName()))
                     {
                         productsFound.Add(new Product(product.GetGuid(), product.GetName(), product.GetPrice()));
                     }
-                }
+                }  
                 return productsFound;
             }
 
             public override void RemoveProduct(Guid productGuid)
             {
-                if (Guid.Empty.Equals(productGuid))
-                {
-                    throw new ArgumentException();
-                }
-
-                productRepository.Remove(productGuid);
+                shopService.RemoveProduct(productGuid);
             }
 
-            public void HandleProductAdded(Data.ProductAbstract product)
+            public void HandleProductAdded(Logic.ProductAbstract product)
             {
                 OnProductAdded?.Invoke(new Product(product.GetGuid(), product.GetName(), product.GetPrice()));
             }
 
-            public void HandleProductRemoved(Data.ProductAbstract product)
+            public void HandleProductRemoved(Logic.ProductAbstract product)
             {
                 OnProductRemoved?.Invoke(new Product(product.GetGuid(), product.GetName(), product.GetPrice()));
             }
@@ -118,18 +99,18 @@ namespace TPUM.Logic
 
         public abstract void RemoveProduct(Guid productGuid);
 
-        public static ShopServiceAbstract CreateShopService()
+        public static MainModelAbstract CreateModel()
         {
-            return new ShopService(ProductRepositoryAbstract.CreateProductRepository());
+            return new MainModel(ShopServiceAbstract.CreateShopService());
         }
 
-        internal static ShopServiceAbstract CreateShopService(ProductRepositoryAbstract productRepository)
+        internal static MainModelAbstract CreateModel(ShopServiceAbstract shopService)
         {
-            if (productRepository == null)
+            if (shopService == null)
             {
-                return CreateShopService();
+                return CreateModel();
             }
-            return new ShopService(productRepository);
+            return new MainModel(shopService);
         }
     }
 }

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace TPUM.Logic
+namespace TPUM.Client.Logic
 {
     public abstract class ProductAbstract
     {

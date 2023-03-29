@@ -6,8 +6,8 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{181C7DE3-AA24-49CD-92DD-389BF1B2210E}</ProjectGuid>
     <OutputType>WinExe</OutputType>
-    <RootNamespace>TPUM.Presentation</RootNamespace>
-    <AssemblyName>TPUM.Presentation</AssemblyName>
+    <RootNamespace>TPUM.Client.Presentation</RootNamespace>
+    <AssemblyName>TPUM.Client.Presentation</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
@@ -100,9 +100,9 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\TPUM.Logic\TPUM.Logic.csproj">
+    <ProjectReference Include="..\TPUM.Client.Logic\TPUM.Client.Logic.csproj">
       <Project>{5138662f-27c6-499c-a697-80684aaa71ef}</Project>
-      <Name>TPUM.Logic</Name>
+      <Name>TPUM.Client.Logic</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -1,33 +1,33 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;
-using TPUM.Presentation.Model;
+using TPUM.Client.Presentation.Model;
 
 namespace TPUM.Tests
 {
     [TestClass]
     public class PresentationModelTests
     {
-        private class ShopService : Logic.ShopServiceAbstract
+        private class ShopService : Client.Logic.ShopServiceAbstract
         {
-            public override event Action<Logic.ProductAbstract> OnProductAdded;
-            public override event Action<Logic.ProductAbstract> OnProductRemoved;
+            public override event Action<Client.Logic.ProductAbstract> OnProductAdded;
+            public override event Action<Client.Logic.ProductAbstract> OnProductRemoved;
 
-            private List<Logic.ProductAbstract> products;
+            private List<Client.Logic.ProductAbstract> products;
 
             public ShopService()
             {
-                products = new List<Logic.ProductAbstract>();
+                products = new List<Client.Logic.ProductAbstract>();
             }
 
             public override void AddProduct(string name, float price)
             {
-                Logic.Product product= new Logic.Product(Guid.NewGuid(), name, price);
+                Client.Logic.Product product= new Client.Logic.Product(Guid.NewGuid(), name, price);
                 if (product == null)
                 {
                     throw new ArgumentNullException();
                 }
-                foreach (Logic.ProductAbstract existingProduct in products)
+                foreach (Client.Logic.ProductAbstract existingProduct in products)
                 {
                     if (existingProduct.GetGuid() == product.GetGuid())
                     {
@@ -38,7 +38,7 @@ namespace TPUM.Tests
                 OnProductAdded?.Invoke(product);
             }
 
-            public override Logic.ProductAbstract FindProduct(string name)
+            public override Client.Logic.ProductAbstract FindProduct(string name)
             {
                 if (name == null)
                 {
@@ -49,17 +49,17 @@ namespace TPUM.Tests
                     throw new ArgumentException();
                 }
 
-                foreach (Logic.ProductAbstract product in products)
+                foreach (Client.Logic.ProductAbstract product in products)
                 {
                     if (name.Equals(product.GetName()))
                     {
-                        return new Logic.Product(product.GetGuid(), product.GetName(), product.GetPrice());
+                        return new Client.Logic.Product(product.GetGuid(), product.GetName(), product.GetPrice());
                     }
                 }
                 return null;
             }
 
-            public override List<Logic.ProductAbstract> FindProducts(string name)
+            public override List<Client.Logic.ProductAbstract> FindProducts(string name)
             {
                 if (name == null)
                 {
@@ -70,12 +70,12 @@ namespace TPUM.Tests
                     throw new ArgumentException();
                 }
 
-                List<Logic.ProductAbstract> productsFound = new List<Logic.ProductAbstract>();
-                foreach (Logic.ProductAbstract product in products)
+                List<Client.Logic.ProductAbstract> productsFound = new List<Client.Logic.ProductAbstract>();
+                foreach (Client.Logic.ProductAbstract product in products)
                 {
                     if (name.Equals(product.GetName()))
                     {
-                        productsFound.Add(new Logic.Product(product.GetGuid(), product.GetName(), product.GetPrice()));
+                        productsFound.Add(new Client.Logic.Product(product.GetGuid(), product.GetName(), product.GetPrice()));
                     }
                 }
                 return productsFound;
@@ -91,7 +91,7 @@ namespace TPUM.Tests
                 {
                     if (productGuid.Equals(products[i].GetGuid()))
                     {
-                        Logic.ProductAbstract product = products[i];
+                        Client.Logic.ProductAbstract product = products[i];
                         products.RemoveAt(i);
                         OnProductRemoved?.Invoke(product);
                     }

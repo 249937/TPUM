@@ -1,6 +1,6 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
-using TPUM.Data;
+using TPUM.Client.Data;
 
 namespace TPUM.Tests
 {

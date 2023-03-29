@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace TPUM.Data
+namespace TPUM.Client.Data
 {
     public abstract class ProductRepositoryAbstract
     {

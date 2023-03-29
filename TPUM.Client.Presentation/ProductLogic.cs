@@ -1,18 +1,16 @@
 ﻿using System;
 
-namespace TPUM.Logic
+namespace TPUM.Client.Presentation.Model
 {
-    internal class Product : ProductAbstract
+    internal class ProductLogic : Logic.ProductAbstract
     {
         private Guid guid;
         private string name;
         private float price;
 
-        public Product(Guid guid, string name, float price) : base(guid)
+        public ProductLogic(Guid guid) : base(guid)
         {
             this.guid = guid;
-            SetName(name);
-            SetPrice(price);
         }
 
         public override Guid GetGuid()

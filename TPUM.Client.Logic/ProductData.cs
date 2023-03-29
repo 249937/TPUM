@@ -1,8 +1,8 @@
 ﻿using System;
 
-namespace TPUM.Logic
+namespace TPUM.Client.Logic
 {
-    internal class ProductData : TPUM.Data.ProductAbstract
+    internal class ProductData : Data.ProductAbstract
     {
         private Guid guid;
         private string name;

@@ -1,32 +1,32 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;
-using TPUM.Logic;
+using TPUM.Client.Logic;
 
 namespace TPUM.Tests
 {
     [TestClass]
     public class LogicTests
     {
-        private class ProductRepository : Data.ProductRepositoryAbstract
+        private class ProductRepository : Client.Data.ProductRepositoryAbstract
         {
-            public override event Action<Data.ProductAbstract> OnProductAdded;
-            public override event Action<Data.ProductAbstract> OnProductRemoved;
+            public override event Action<Client.Data.ProductAbstract> OnProductAdded;
+            public override event Action<Client.Data.ProductAbstract> OnProductRemoved;
 
-            private List<Data.ProductAbstract> products;
+            private List<Client.Data.ProductAbstract> products;
 
             public ProductRepository()
             {
-                products = new List<Data.ProductAbstract>();
+                products = new List<Client.Data.ProductAbstract>();
             }
 
-            public override void Add(Data.ProductAbstract product)
+            public override void Add(Client.Data.ProductAbstract product)
             {
                 if (product == null)
                 {
                     throw new ArgumentNullException();
                 }
-                foreach (Data.ProductAbstract existingProduct in products)
+                foreach (Client.Data.ProductAbstract existingProduct in products)
                 {
                     if (existingProduct.GetGuid() == product.GetGuid())
                     {
@@ -37,13 +37,13 @@ namespace TPUM.Tests
                 OnProductAdded?.Invoke(product);
             }
 
-            public override Data.ProductAbstract Get(Guid productGuid)
+            public override Client.Data.ProductAbstract Get(Guid productGuid)
             {
                 if (Guid.Empty.Equals(productGuid))
                 {
                     throw new ArgumentException();
                 }
-                foreach (Data.ProductAbstract product in products)
+                foreach (Client.Data.ProductAbstract product in products)
                 {
                     if (product.GetGuid() == productGuid)
                     {
@@ -53,7 +53,7 @@ namespace TPUM.Tests
                 return null;
             }
 
-            public override List<Data.ProductAbstract> GetAll()
+            public override List<Client.Data.ProductAbstract> GetAll()
             {
                 return products;
             }
@@ -68,7 +68,7 @@ namespace TPUM.Tests
                 {
                     if (productGuid.Equals(products[i].GetGuid()))
                     {
-                        Data.ProductAbstract product = products[i];
+                        Client.Data.ProductAbstract product = products[i];
                         products.RemoveAt(i);
                         OnProductRemoved?.Invoke(product);
                     }
