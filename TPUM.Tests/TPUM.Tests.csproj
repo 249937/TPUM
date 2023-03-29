@@ -70,6 +70,18 @@
       <Project>{181c7de3-aa24-49cd-92dd-389bf1b2210e}</Project>
       <Name>TPUM.Client.Presentation</Name>
     </ProjectReference>
+    <ProjectReference Include="..\TPUM.Server.Data\TPUM.Server.Data.csproj">
+      <Project>{28630810-a278-4053-a33a-61e422a10190}</Project>
+      <Name>TPUM.Server.Data</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\TPUM.Server.Logic\TPUM.Server.Logic.csproj">
+      <Project>{174a8e0a-682b-4256-8866-dcfc4d88f124}</Project>
+      <Name>TPUM.Server.Logic</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\TPUM.Server.Presentation\TPUM.Server.Presentation.csproj">
+      <Project>{2cf3ce6d-7db6-4f96-b0c7-4f07de099a42}</Project>
+      <Name>TPUM.Server.Presentation</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets" Condition="Exists('$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets')" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
