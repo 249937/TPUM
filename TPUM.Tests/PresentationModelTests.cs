@@ -8,10 +8,101 @@ namespace TPUM.Tests
     [TestClass]
     public class PresentationModelTests
     {
+        private class ShopService : Logic.ShopServiceAbstract
+        {
+            public override event Action<Logic.ProductAbstract> OnProductAdded;
+            public override event Action<Logic.ProductAbstract> OnProductRemoved;
+
+            private List<Logic.ProductAbstract> products;
+
+            public ShopService()
+            {
+                products = new List<Logic.ProductAbstract>();
+            }
+
+            public override void AddProduct(string name, float price)
+            {
+                Logic.Product product= new Logic.Product(Guid.NewGuid(), name, price);
+                if (product == null)
+                {
+                    throw new ArgumentNullException();
+                }
+                foreach (Logic.ProductAbstract existingProduct in products)
+                {
+                    if (existingProduct.GetGuid() == product.GetGuid())
+                    {
+                        return;
+                    }
+                }
+                products.Add(product);
+                OnProductAdded?.Invoke(product);
+            }
+
+            public override Logic.ProductAbstract FindProduct(string name)
+            {
+                if (name == null)
+                {
+                    throw new ArgumentNullException();
+                }
+                if (string.IsNullOrWhiteSpace(name))
+                {
+                    throw new ArgumentException();
+                }
+
+                foreach (Logic.ProductAbstract product in products)
+                {
+                    if (name.Equals(product.GetName()))
+                    {
+                        return new Logic.Product(product.GetGuid(), product.GetName(), product.GetPrice());
+                    }
+                }
+                return null;
+            }
+
+            public override List<Logic.ProductAbstract> FindProducts(string name)
+            {
+                if (name == null)
+                {
+                    throw new ArgumentNullException();
+                }
+                if (string.IsNullOrWhiteSpace(name))
+                {
+                    throw new ArgumentException();
+                }
+
+                List<Logic.ProductAbstract> productsFound = new List<Logic.ProductAbstract>();
+                foreach (Logic.ProductAbstract product in products)
+                {
+                    if (name.Equals(product.GetName()))
+                    {
+                        productsFound.Add(new Logic.Product(product.GetGuid(), product.GetName(), product.GetPrice()));
+                    }
+                }
+                return productsFound;
+            }
+
+            public override void RemoveProduct(Guid productGuid)
+            {
+                if (Guid.Empty.Equals(productGuid))
+                {
+                    throw new ArgumentException();
+                }
+                for (int i = products.Count - 1; i >= 0; --i)
+                {
+                    if (productGuid.Equals(products[i].GetGuid()))
+                    {
+                        Logic.ProductAbstract product = products[i];
+                        products.RemoveAt(i);
+                        OnProductRemoved?.Invoke(product);
+                    }
+                }
+            }
+        }
+
         [TestMethod]
         public void AddProductWithInvalidNameTest()
         {
-            MainModelAbstract model = MainModelAbstract.CreateModel();
+            MainModelAbstract model = MainModelAbstract.CreateModel(new ShopService());
 
             string productName1 = "";
             string productName2 = null;
@@ -24,7 +115,7 @@ namespace TPUM.Tests
         [TestMethod]
         public void AddProductWithInvalidPrice()
         {
-            MainModelAbstract model = MainModelAbstract.CreateModel();
+            MainModelAbstract model = MainModelAbstract.CreateModel(new ShopService());
 
             string productName = "Test Product";
             float productPrice1 = 0.00f;
@@ -37,7 +128,7 @@ namespace TPUM.Tests
         [TestMethod]
         public void InvalidFindTest()
         {
-            MainModelAbstract model = MainModelAbstract.CreateModel();
+            MainModelAbstract model = MainModelAbstract.CreateModel(new ShopService());
 
             string nullName = null;
             string emptyName = "";
@@ -52,7 +143,7 @@ namespace TPUM.Tests
         [TestMethod]
         public void AddFindRemoveTest()
         {
-            MainModelAbstract model = MainModelAbstract.CreateModel();
+            MainModelAbstract model = MainModelAbstract.CreateModel(new ShopService());
 
             string productName = "Test Product";
             float productPrice = 5.25f;
@@ -79,7 +170,7 @@ namespace TPUM.Tests
         [TestMethod]
         public void FindProductsTest()
         {
-            MainModelAbstract model = MainModelAbstract.CreateModel();
+            MainModelAbstract model = MainModelAbstract.CreateModel(new ShopService());
 
             string product1Name = "Test Product 1";
             float product1Price = 5.25f;

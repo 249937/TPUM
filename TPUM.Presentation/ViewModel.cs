@@ -3,7 +3,6 @@ using System.Runtime.CompilerServices;
 using TPUM.Presentation.Model;
 using System;
 using System.Collections.Generic;
-using TPUM.Logic;
 
 namespace TPUM.Presentation.ViewModel
 {

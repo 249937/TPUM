@@ -104,7 +104,7 @@ namespace TPUM.Presentation.Model
             return new MainModel(ShopServiceAbstract.CreateShopService());
         }
 
-        internal static MainModelAbstract CreateShopService(ShopServiceAbstract shopService)
+        internal static MainModelAbstract CreateModel(ShopServiceAbstract shopService)
         {
             if (shopService == null)
             {
