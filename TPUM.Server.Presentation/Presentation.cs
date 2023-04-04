@@ -1,16 +1,24 @@
 ﻿using System;
-using System.Collections.Generic;
+using System.IO;
 using System.Net;
 using System.Net.WebSockets;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Xml.Serialization;
 
 namespace TPUM.Server.Presentation
 {
     public abstract class WebSocketConnection
     {
-        public virtual Action<string> OnMessage
+        public class Product
+        {
+            public Guid guid;
+            public string name;
+            public float price;
+        }
+
+        public virtual Action<Product> OnMessage
         {
             set;
             protected get;
@@ -84,7 +92,13 @@ namespace TPUM.Server.Presentation
                     receiveResult = webSocket.ReceiveAsync(segments, CancellationToken.None).Result;
                     count += receiveResult.Count;
                 }
-                OnMessage?.Invoke(Encoding.UTF8.GetString(buffer, 0, count));
+                Product receivedProduct = new Product();
+                XmlSerializer serializer = new XmlSerializer(typeof(Product));
+                using (MemoryStream stream = new MemoryStream(buffer))
+                {
+                    receivedProduct = (Product)serializer.Deserialize(stream);
+                }
+                OnMessage?.Invoke(receivedProduct);
             }
         }
     }
@@ -103,7 +117,7 @@ namespace TPUM.Server.Presentation
                             webSocketConnectionServer = webSocketConnection;
                             webSocketConnectionServer.OnMessage = (data) =>
                             {
-                                Console.WriteLine(data);
+                                Console.WriteLine("[Product] GUID: " + data.guid  + ", Name: " + data.name + ", Price: " + data.price);
                             };
                         }
                     );

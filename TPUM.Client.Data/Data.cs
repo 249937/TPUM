@@ -1,13 +1,22 @@
 ﻿using System;
+using System.IO;
 using System.Net.WebSockets;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Xml.Serialization;
 
 namespace TPUM.Client.Data
 {
     public abstract class WebSocketConnection
     {
+        public class Product
+        {
+            public Guid guid;
+            public string name;
+            public float price;
+        }
+
         public virtual Action<string> OnMessage
         {
             set;
@@ -26,14 +35,14 @@ namespace TPUM.Client.Data
             protected get;
         } = () => { };
 
-        public async Task SendAsync(string message)
+        public async Task SendAsync(Product product)
         {
-            await SendTask(message);
+            await SendTask(product);
         }
 
         public abstract Task DisconnectAsync();
 
-        protected abstract Task SendTask(string message);
+        protected abstract Task SendTask(Product product);
     }
 
     internal static class WebSocketClient
@@ -61,9 +70,16 @@ namespace TPUM.Client.Data
                 Task.Factory.StartNew(() => ClientMessageLoop());
             }
 
-            protected override Task SendTask(string message)
+            protected override Task SendTask(Product product)
             {
-                return clientWebSocket.SendAsync(new ArraySegment<byte>(Encoding.UTF8.GetBytes(message)), WebSocketMessageType.Text, true, CancellationToken.None);
+                byte[] serializedData;
+                XmlSerializer serializer = new XmlSerializer(typeof(Product));
+                using (MemoryStream stream = new MemoryStream())
+                {
+                    serializer.Serialize(stream, product);
+                    serializedData = stream.ToArray();
+                }
+                return clientWebSocket.SendAsync(new ArraySegment<byte>(serializedData), WebSocketMessageType.Text, true, CancellationToken.None);
             }
 
             public override Task DisconnectAsync()
