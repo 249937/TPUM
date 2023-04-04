@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace TPUM.Client.Data
 {
@@ -32,6 +33,16 @@ namespace TPUM.Client.Data
                 }
                 products.Add(product);
                 OnProductAdded?.Invoke(product);
+
+                Task addTask = Task.Run(async () =>
+                    {
+                        WebSocketConnection webSocketConnectionClient = await WebSocketClient.Connect(new Uri("ws://localhost:1337"));
+                        Task clientSendTask = webSocketConnectionClient.SendAsync("[ADD PRODUCT] GUID: " + product.GetGuid() + ", NAME: " + product.GetName() + ", PRICE: " + product.GetPrice());
+                        clientSendTask.Wait(new TimeSpan(0, 0, 10));
+                        await webSocketConnectionClient?.DisconnectAsync();
+                    }
+                );
+                addTask.Wait();
             }
 
             public override ProductAbstract Get(Guid productGuid)
@@ -40,6 +51,17 @@ namespace TPUM.Client.Data
                 {
                     throw new ArgumentException();
                 }
+
+                Task getTask = Task.Run(async () =>
+                    {
+                        WebSocketConnection webSocketConnectionClient = await WebSocketClient.Connect(new Uri("ws://localhost:1337"));
+                        Task clientSendTask = webSocketConnectionClient.SendAsync("[GET PRODUCT] GUID: " + productGuid);
+                        clientSendTask.Wait(new TimeSpan(0, 0, 10));
+                        await webSocketConnectionClient?.DisconnectAsync();
+                    }
+                );
+                getTask.Wait();
+
                 foreach (ProductAbstract product in products)
                 {
                     if (product.GetGuid() == productGuid)
@@ -52,6 +74,16 @@ namespace TPUM.Client.Data
 
             public override List<ProductAbstract> GetAll()
             {
+                Task getTask = Task.Run(async () =>
+                    {
+                        WebSocketConnection webSocketConnectionClient = await WebSocketClient.Connect(new Uri("ws://localhost:1337"));
+                        Task clientSendTask = webSocketConnectionClient.SendAsync("[GET ALL PRODUCTS]");
+                        clientSendTask.Wait(new TimeSpan(0, 0, 10));
+                        await webSocketConnectionClient?.DisconnectAsync();
+                    }
+                );
+                getTask.Wait();
+
                 return products;
             }
 
@@ -61,6 +93,17 @@ namespace TPUM.Client.Data
                 {
                     throw new ArgumentException();
                 }
+
+                Task getTask = Task.Run(async () =>
+                    {
+                        WebSocketConnection webSocketConnectionClient = await WebSocketClient.Connect(new Uri("ws://localhost:1337"));
+                        Task clientSendTask = webSocketConnectionClient.SendAsync("[REMOVE PRODUCT] GUID: " + productGuid);
+                        clientSendTask.Wait(new TimeSpan(0, 0, 10));
+                        await webSocketConnectionClient?.DisconnectAsync();
+                    }
+                );
+                getTask.Wait();
+
                 for (int i = products.Count - 1; i >= 0; --i)
                 {
                     if (productGuid.Equals(products[i].GetGuid()))
