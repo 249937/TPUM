@@ -11,28 +11,7 @@ namespace TPUM.Server.Presentation
 {
     public abstract class WebSocketConnection
     {
-        public enum Command
-        {
-            Add,
-            Get,
-            GetAll,
-            Remove
-        }
-
-        public class CommandData
-        {
-            public Command command;
-            public byte[] data;
-        }
-
-        public class Product
-        {
-            public Guid guid;
-            public string name;
-            public float price;
-        }
-
-        public virtual Action<CommandData> OnMessage
+        public virtual Action<ClientServer.Communication.CommandData> OnMessage
         {
             set;
             protected get;
@@ -106,11 +85,11 @@ namespace TPUM.Server.Presentation
                     receiveResult = webSocket.ReceiveAsync(segments, CancellationToken.None).Result;
                     count += receiveResult.Count;
                 }
-                CommandData receivedCommandData = new CommandData();
-                XmlSerializer serializer = new XmlSerializer(typeof(CommandData));
+                ClientServer.Communication.CommandData receivedCommandData = new ClientServer.Communication.CommandData();
+                XmlSerializer serializer = new XmlSerializer(typeof(ClientServer.Communication.CommandData));
                 using (MemoryStream stream = new MemoryStream(buffer))
                 {
-                    receivedCommandData = (CommandData)serializer.Deserialize(stream);
+                    receivedCommandData = (ClientServer.Communication.CommandData)serializer.Deserialize(stream);
                 }
                 OnMessage?.Invoke(receivedCommandData);
             }
@@ -131,18 +110,18 @@ namespace TPUM.Server.Presentation
                             webSocketConnectionServer = webSocketConnection;
                             webSocketConnectionServer.OnMessage = (commandData) =>
                             {
-                                if (WebSocketConnection.Command.Add.Equals(commandData.command))
+                                if (ClientServer.Communication.Command.Add.Equals(commandData.command))
                                 {
                                     Console.WriteLine("[COMMAND] ADD");
-                                    WebSocketConnection.Product receivedProduct;
-                                    XmlSerializer serializer = new XmlSerializer(typeof(WebSocketConnection.Product));
+                                    ClientServer.Communication.Product receivedProduct;
+                                    XmlSerializer serializer = new XmlSerializer(typeof(ClientServer.Communication.Product));
                                     using (MemoryStream stream = new MemoryStream(commandData.data))
                                     {
-                                        receivedProduct = (WebSocketConnection.Product)serializer.Deserialize(stream);
+                                        receivedProduct = (ClientServer.Communication.Product)serializer.Deserialize(stream);
                                     }
                                     Console.WriteLine("[Product] GUID: " + receivedProduct.guid + ", Name: " + receivedProduct.name + ", Price: " + receivedProduct.price);
                                 }
-                                else if (WebSocketConnection.Command.Get.Equals(commandData.command))
+                                else if (ClientServer.Communication.Command.Get.Equals(commandData.command))
                                 {
                                     Console.WriteLine("[COMMAND] GET");
                                     Guid receivedGuid;
@@ -153,11 +132,11 @@ namespace TPUM.Server.Presentation
                                     }
                                     Console.WriteLine("[Product] GUID: " + receivedGuid);
                                 }
-                                else if (WebSocketConnection.Command.GetAll.Equals(commandData.command))
+                                else if (ClientServer.Communication.Command.GetAll.Equals(commandData.command))
                                 {
                                     Console.WriteLine("[COMMAND] GET ALL");
                                 }
-                                else if (WebSocketConnection.Command.Remove.Equals(commandData.command))
+                                else if (ClientServer.Communication.Command.Remove.Equals(commandData.command))
                                 {
                                     Console.WriteLine("[COMMAND] REMOVE");
                                     Guid receivedGuid;

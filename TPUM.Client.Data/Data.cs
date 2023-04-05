@@ -10,27 +10,6 @@ namespace TPUM.Client.Data
 {
     public abstract class WebSocketConnection
     {
-        public enum Command
-        {
-            Add,
-            Get,
-            GetAll,
-            Remove
-        }
-
-        public class CommandData
-        {
-            public Command command;
-            public byte[] data;
-        }
-
-        public class Product
-        {
-            public Guid guid;
-            public string name;
-            public float price;
-        }
-
         public virtual Action<string> OnMessage
         {
             set;
@@ -49,14 +28,14 @@ namespace TPUM.Client.Data
             protected get;
         } = () => { };
 
-        public async Task SendAsync(CommandData commandData)
+        public async Task SendAsync(ClientServer.Communication.CommandData commandData)
         {
             await SendTask(commandData);
         }
 
         public abstract Task DisconnectAsync();
 
-        protected abstract Task SendTask(CommandData commandData);
+        protected abstract Task SendTask(ClientServer.Communication.CommandData commandData);
     }
 
     internal static class WebSocketClient
@@ -84,10 +63,10 @@ namespace TPUM.Client.Data
                 Task.Factory.StartNew(() => ClientMessageLoop());
             }
 
-            protected override Task SendTask(CommandData commandData)
+            protected override Task SendTask(ClientServer.Communication.CommandData commandData)
             {
                 byte[] serializedData;
-                XmlSerializer serializer = new XmlSerializer(typeof(CommandData));
+                XmlSerializer serializer = new XmlSerializer(typeof(ClientServer.Communication.CommandData));
                 using (MemoryStream stream = new MemoryStream())
                 {
                     serializer.Serialize(stream, commandData);

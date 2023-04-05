@@ -47,5 +47,11 @@
     <Compile Include="ProductRepository.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\TPUM.ClientServer.Communication\TPUM.ClientServer.Communication.csproj">
+      <Project>{54e79603-852e-4f8a-91d8-3beab9f04cc5}</Project>
+      <Name>TPUM.ClientServer.Communication</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

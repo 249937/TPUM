@@ -38,19 +38,19 @@ namespace TPUM.Client.Data
 
                 Task addTask = Task.Run(async () =>
                     {
-                        WebSocketConnection.Product webSocketProduct = new WebSocketConnection.Product();
+                        ClientServer.Communication.Product webSocketProduct = new ClientServer.Communication.Product();
                         webSocketProduct.guid = product.GetGuid();
                         webSocketProduct.name = product.GetName();
                         webSocketProduct.price = product.GetPrice();
                         byte[] serializedData;
-                        XmlSerializer serializer = new XmlSerializer(typeof(WebSocketConnection.Product));
+                        XmlSerializer serializer = new XmlSerializer(typeof(ClientServer.Communication.Product));
                         using (MemoryStream stream = new MemoryStream())
                         {
                             serializer.Serialize(stream, webSocketProduct);
                             serializedData = stream.ToArray();
                         }
-                        WebSocketConnection.CommandData commandData = new WebSocketConnection.CommandData();
-                        commandData.command = WebSocketConnection.Command.Add;
+                        ClientServer.Communication.CommandData commandData = new ClientServer.Communication.CommandData();
+                        commandData.command = ClientServer.Communication.Command.Add;
                         commandData.data = serializedData;
                         WebSocketConnection webSocketConnectionClient = await WebSocketClient.Connect(new Uri("ws://localhost:1337"));
                         Task clientSendTask = webSocketConnectionClient.SendAsync(commandData);
@@ -77,8 +77,8 @@ namespace TPUM.Client.Data
                             serializer.Serialize(stream, productGuid);
                             serializedData = stream.ToArray();
                         }
-                        WebSocketConnection.CommandData commandData = new WebSocketConnection.CommandData();
-                        commandData.command = WebSocketConnection.Command.Get;
+                        ClientServer.Communication.CommandData commandData = new ClientServer.Communication.CommandData();
+                        commandData.command = ClientServer.Communication.Command.Get;
                         commandData.data = serializedData;
                         WebSocketConnection webSocketConnectionClient = await WebSocketClient.Connect(new Uri("ws://localhost:1337"));
                         Task clientSendTask = webSocketConnectionClient.SendAsync(commandData);
@@ -102,8 +102,8 @@ namespace TPUM.Client.Data
             {
                 Task removeTask = Task.Run(async () =>
                     {
-                        WebSocketConnection.CommandData commandData = new WebSocketConnection.CommandData();
-                        commandData.command = WebSocketConnection.Command.GetAll;
+                        ClientServer.Communication.CommandData commandData = new ClientServer.Communication.CommandData();
+                        commandData.command = ClientServer.Communication.Command.GetAll;
                         commandData.data = null;
                         WebSocketConnection webSocketConnectionClient = await WebSocketClient.Connect(new Uri("ws://localhost:1337"));
                         Task clientSendTask = webSocketConnectionClient.SendAsync(commandData);
@@ -132,8 +132,8 @@ namespace TPUM.Client.Data
                             serializer.Serialize(stream, productGuid);
                             serializedData = stream.ToArray();
                         }
-                        WebSocketConnection.CommandData commandData = new WebSocketConnection.CommandData();
-                        commandData.command = WebSocketConnection.Command.Remove;
+                        ClientServer.Communication.CommandData commandData = new ClientServer.Communication.CommandData();
+                        commandData.command = ClientServer.Communication.Command.Remove;
                         commandData.data = serializedData;
                         WebSocketConnection webSocketConnectionClient = await WebSocketClient.Connect(new Uri("ws://localhost:1337"));
                         Task clientSendTask = webSocketConnectionClient.SendAsync(commandData);
