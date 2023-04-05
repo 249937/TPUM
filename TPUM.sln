@@ -12,13 +12,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TPUM.Client.Logic", "TPUM.C
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TPUM.Client.Presentation", "TPUM.Client.Presentation\TPUM.Client.Presentation.csproj", "{181C7DE3-AA24-49CD-92DD-389BF1B2210E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TPUM.Tests", "TPUM.Tests\TPUM.Tests.csproj", "{1D451C63-37B9-4D17-8FE5-F22AB2740F70}"
-	ProjectSection(ProjectDependencies) = postProject
-		{174A8E0A-682B-4256-8866-DCFC4D88F124} = {174A8E0A-682B-4256-8866-DCFC4D88F124}
-		{28630810-A278-4053-A33A-61E422A10190} = {28630810-A278-4053-A33A-61E422A10190}
-		{2CF3CE6D-7DB6-4F96-B0C7-4F07DE099A42} = {2CF3CE6D-7DB6-4F96-B0C7-4F07DE099A42}
-	EndProjectSection
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TPUM.Server.Data", "TPUM.Server.Data\TPUM.Server.Data.csproj", "{28630810-A278-4053-A33A-61E422A10190}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TPUM.Server.Logic", "TPUM.Server.Logic\TPUM.Server.Logic.csproj", "{174A8E0A-682B-4256-8866-DCFC4D88F124}"
@@ -33,6 +26,18 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TPUM.Server.Presentation", 
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TPUM.ClientServer.Communication", "TPUM.ClientServer.Communication\TPUM.ClientServer.Communication.csproj", "{54E79603-852E-4F8A-91D8-3BEAB9F04CC5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TPUM.Client.Data.Tests", "TPUM.Client.Data.Tests\TPUM.Client.Data.Tests.csproj", "{B28B2C95-A79B-4268-BBD8-A5EAB8D43A88}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TPUM.Client.Logic.Tests", "TPUM.Client.Logic.Tests\TPUM.Client.Logic.Tests.csproj", "{E83F8A83-9DFA-4AD4-8850-0F61A49B759A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TPUM.Server.Data.Tests", "TPUM.Server.Data.Tests\TPUM.Server.Data.Tests.csproj", "{4AE45ABC-7ACE-4763-9A79-EBC69394E09A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TPUM.Client.Presentation.Tests", "TPUM.Client.Presentation.Tests\TPUM.Client.Presentation.Tests.csproj", "{1C30DF63-D2D2-4F6D-9372-3679F8E5EA8A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TPUM.Server.Logic.Tests", "TPUM.Server.Logic.Tests\TPUM.Server.Logic.Tests.csproj", "{EDF86884-8D33-4EA6-96A6-D491FCF2E730}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TPUM.Server.Presentation.Tests", "TPUM.Server.Presentation.Tests\TPUM.Server.Presentation.Tests.csproj", "{F470B46E-2A6A-4CF7-A80C-F50D6C3317D6}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -52,10 +57,6 @@ Global
 		{181C7DE3-AA24-49CD-92DD-389BF1B2210E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{181C7DE3-AA24-49CD-92DD-389BF1B2210E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{181C7DE3-AA24-49CD-92DD-389BF1B2210E}.Release|Any CPU.Build.0 = Release|Any CPU
-		{1D451C63-37B9-4D17-8FE5-F22AB2740F70}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{1D451C63-37B9-4D17-8FE5-F22AB2740F70}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{1D451C63-37B9-4D17-8FE5-F22AB2740F70}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{1D451C63-37B9-4D17-8FE5-F22AB2740F70}.Release|Any CPU.Build.0 = Release|Any CPU
 		{28630810-A278-4053-A33A-61E422A10190}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{28630810-A278-4053-A33A-61E422A10190}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{28630810-A278-4053-A33A-61E422A10190}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -72,6 +73,30 @@ Global
 		{54E79603-852E-4F8A-91D8-3BEAB9F04CC5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{54E79603-852E-4F8A-91D8-3BEAB9F04CC5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{54E79603-852E-4F8A-91D8-3BEAB9F04CC5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B28B2C95-A79B-4268-BBD8-A5EAB8D43A88}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B28B2C95-A79B-4268-BBD8-A5EAB8D43A88}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B28B2C95-A79B-4268-BBD8-A5EAB8D43A88}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B28B2C95-A79B-4268-BBD8-A5EAB8D43A88}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E83F8A83-9DFA-4AD4-8850-0F61A49B759A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E83F8A83-9DFA-4AD4-8850-0F61A49B759A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E83F8A83-9DFA-4AD4-8850-0F61A49B759A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E83F8A83-9DFA-4AD4-8850-0F61A49B759A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4AE45ABC-7ACE-4763-9A79-EBC69394E09A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4AE45ABC-7ACE-4763-9A79-EBC69394E09A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4AE45ABC-7ACE-4763-9A79-EBC69394E09A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4AE45ABC-7ACE-4763-9A79-EBC69394E09A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1C30DF63-D2D2-4F6D-9372-3679F8E5EA8A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1C30DF63-D2D2-4F6D-9372-3679F8E5EA8A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1C30DF63-D2D2-4F6D-9372-3679F8E5EA8A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1C30DF63-D2D2-4F6D-9372-3679F8E5EA8A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EDF86884-8D33-4EA6-96A6-D491FCF2E730}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EDF86884-8D33-4EA6-96A6-D491FCF2E730}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EDF86884-8D33-4EA6-96A6-D491FCF2E730}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EDF86884-8D33-4EA6-96A6-D491FCF2E730}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F470B46E-2A6A-4CF7-A80C-F50D6C3317D6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F470B46E-2A6A-4CF7-A80C-F50D6C3317D6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F470B46E-2A6A-4CF7-A80C-F50D6C3317D6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F470B46E-2A6A-4CF7-A80C-F50D6C3317D6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -1,8 +1,7 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
-using TPUM.Client.Data;
 
-namespace TPUM.Tests
+namespace TPUM.Client.Data.Tests
 {
     [TestClass]
     public class DataTests
