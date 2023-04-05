@@ -11,6 +11,20 @@ namespace TPUM.Server.Presentation
 {
     public abstract class WebSocketConnection
     {
+        public enum Command
+        {
+            Add,
+            Get,
+            GetAll,
+            Remove
+        }
+
+        public class CommandData
+        {
+            public Command command;
+            public byte[] data;
+        }
+
         public class Product
         {
             public Guid guid;
@@ -18,7 +32,7 @@ namespace TPUM.Server.Presentation
             public float price;
         }
 
-        public virtual Action<Product> OnMessage
+        public virtual Action<CommandData> OnMessage
         {
             set;
             protected get;
@@ -92,13 +106,13 @@ namespace TPUM.Server.Presentation
                     receiveResult = webSocket.ReceiveAsync(segments, CancellationToken.None).Result;
                     count += receiveResult.Count;
                 }
-                Product receivedProduct = new Product();
-                XmlSerializer serializer = new XmlSerializer(typeof(Product));
+                CommandData receivedCommandData = new CommandData();
+                XmlSerializer serializer = new XmlSerializer(typeof(CommandData));
                 using (MemoryStream stream = new MemoryStream(buffer))
                 {
-                    receivedProduct = (Product)serializer.Deserialize(stream);
+                    receivedCommandData = (CommandData)serializer.Deserialize(stream);
                 }
-                OnMessage?.Invoke(receivedProduct);
+                OnMessage?.Invoke(receivedCommandData);
             }
         }
     }
@@ -115,9 +129,45 @@ namespace TPUM.Server.Presentation
                     await ServerMainLoop(uri.Port, webSocketConnection =>
                         {
                             webSocketConnectionServer = webSocketConnection;
-                            webSocketConnectionServer.OnMessage = (data) =>
+                            webSocketConnectionServer.OnMessage = (commandData) =>
                             {
-                                Console.WriteLine("[Product] GUID: " + data.guid  + ", Name: " + data.name + ", Price: " + data.price);
+                                if (WebSocketConnection.Command.Add.Equals(commandData.command))
+                                {
+                                    Console.WriteLine("[COMMAND] ADD");
+                                    WebSocketConnection.Product receivedProduct;
+                                    XmlSerializer serializer = new XmlSerializer(typeof(WebSocketConnection.Product));
+                                    using (MemoryStream stream = new MemoryStream(commandData.data))
+                                    {
+                                        receivedProduct = (WebSocketConnection.Product)serializer.Deserialize(stream);
+                                    }
+                                    Console.WriteLine("[Product] GUID: " + receivedProduct.guid + ", Name: " + receivedProduct.name + ", Price: " + receivedProduct.price);
+                                }
+                                else if (WebSocketConnection.Command.Get.Equals(commandData.command))
+                                {
+                                    Console.WriteLine("[COMMAND] GET");
+                                    Guid receivedGuid;
+                                    XmlSerializer serializer = new XmlSerializer(typeof(Guid));
+                                    using (MemoryStream stream = new MemoryStream(commandData.data))
+                                    {
+                                        receivedGuid = (Guid)serializer.Deserialize(stream);
+                                    }
+                                    Console.WriteLine("[Product] GUID: " + receivedGuid);
+                                }
+                                else if (WebSocketConnection.Command.GetAll.Equals(commandData.command))
+                                {
+                                    Console.WriteLine("[COMMAND] GET ALL");
+                                }
+                                else if (WebSocketConnection.Command.Remove.Equals(commandData.command))
+                                {
+                                    Console.WriteLine("[COMMAND] REMOVE");
+                                    Guid receivedGuid;
+                                    XmlSerializer serializer = new XmlSerializer(typeof(Guid));
+                                    using (MemoryStream stream = new MemoryStream(commandData.data))
+                                    {
+                                        receivedGuid = (Guid)serializer.Deserialize(stream);
+                                    }
+                                    Console.WriteLine("[Product] GUID: " + receivedGuid);
+                                }
                             };
                         }
                     );

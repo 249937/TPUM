@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Threading.Tasks;
+using System.Xml.Serialization;
 
 namespace TPUM.Client.Data
 {
@@ -36,12 +38,22 @@ namespace TPUM.Client.Data
 
                 Task addTask = Task.Run(async () =>
                     {
-                        WebSocketConnection webSocketConnectionClient = await WebSocketClient.Connect(new Uri("ws://localhost:1337"));
                         WebSocketConnection.Product webSocketProduct = new WebSocketConnection.Product();
                         webSocketProduct.guid = product.GetGuid();
                         webSocketProduct.name = product.GetName();
                         webSocketProduct.price = product.GetPrice();
-                        Task clientSendTask = webSocketConnectionClient.SendAsync(webSocketProduct);
+                        byte[] serializedData;
+                        XmlSerializer serializer = new XmlSerializer(typeof(WebSocketConnection.Product));
+                        using (MemoryStream stream = new MemoryStream())
+                        {
+                            serializer.Serialize(stream, webSocketProduct);
+                            serializedData = stream.ToArray();
+                        }
+                        WebSocketConnection.CommandData commandData = new WebSocketConnection.CommandData();
+                        commandData.command = WebSocketConnection.Command.Add;
+                        commandData.data = serializedData;
+                        WebSocketConnection webSocketConnectionClient = await WebSocketClient.Connect(new Uri("ws://localhost:1337"));
+                        Task clientSendTask = webSocketConnectionClient.SendAsync(commandData);
                         clientSendTask.Wait(new TimeSpan(0, 0, 10));
                         await webSocketConnectionClient?.DisconnectAsync();
                     }
@@ -58,12 +70,18 @@ namespace TPUM.Client.Data
 
                 Task getTask = Task.Run(async () =>
                     {
+                        byte[] serializedData;
+                        XmlSerializer serializer = new XmlSerializer(typeof(Guid));
+                        using (MemoryStream stream = new MemoryStream())
+                        {
+                            serializer.Serialize(stream, productGuid);
+                            serializedData = stream.ToArray();
+                        }
+                        WebSocketConnection.CommandData commandData = new WebSocketConnection.CommandData();
+                        commandData.command = WebSocketConnection.Command.Get;
+                        commandData.data = serializedData;
                         WebSocketConnection webSocketConnectionClient = await WebSocketClient.Connect(new Uri("ws://localhost:1337"));
-                        WebSocketConnection.Product webSocketProduct = new WebSocketConnection.Product();
-                        webSocketProduct.guid = productGuid;
-                        webSocketProduct.name = "";
-                        webSocketProduct.price = 0.0f;
-                        Task clientSendTask = webSocketConnectionClient.SendAsync(webSocketProduct);
+                        Task clientSendTask = webSocketConnectionClient.SendAsync(commandData);
                         clientSendTask.Wait(new TimeSpan(0, 0, 10));
                         await webSocketConnectionClient?.DisconnectAsync();
                     }
@@ -82,6 +100,19 @@ namespace TPUM.Client.Data
 
             public override List<ProductAbstract> GetAll()
             {
+                Task removeTask = Task.Run(async () =>
+                    {
+                        WebSocketConnection.CommandData commandData = new WebSocketConnection.CommandData();
+                        commandData.command = WebSocketConnection.Command.GetAll;
+                        commandData.data = null;
+                        WebSocketConnection webSocketConnectionClient = await WebSocketClient.Connect(new Uri("ws://localhost:1337"));
+                        Task clientSendTask = webSocketConnectionClient.SendAsync(commandData);
+                        clientSendTask.Wait(new TimeSpan(0, 0, 10));
+                        await webSocketConnectionClient?.DisconnectAsync();
+                    }
+                );
+                removeTask.Wait();
+
                 return products;
             }
 
@@ -92,19 +123,25 @@ namespace TPUM.Client.Data
                     throw new ArgumentException();
                 }
 
-                Task getTask = Task.Run(async () =>
+                Task removeTask = Task.Run(async () =>
                     {
+                        byte[] serializedData;
+                        XmlSerializer serializer = new XmlSerializer(typeof(Guid));
+                        using (MemoryStream stream = new MemoryStream())
+                        {
+                            serializer.Serialize(stream, productGuid);
+                            serializedData = stream.ToArray();
+                        }
+                        WebSocketConnection.CommandData commandData = new WebSocketConnection.CommandData();
+                        commandData.command = WebSocketConnection.Command.Remove;
+                        commandData.data = serializedData;
                         WebSocketConnection webSocketConnectionClient = await WebSocketClient.Connect(new Uri("ws://localhost:1337"));
-                        WebSocketConnection.Product webSocketProduct = new WebSocketConnection.Product();
-                        webSocketProduct.guid = productGuid;
-                        webSocketProduct.name = "";
-                        webSocketProduct.price = 0.0f;
-                        Task clientSendTask = webSocketConnectionClient.SendAsync(webSocketProduct);
+                        Task clientSendTask = webSocketConnectionClient.SendAsync(commandData);
                         clientSendTask.Wait(new TimeSpan(0, 0, 10));
                         await webSocketConnectionClient?.DisconnectAsync();
                     }
                 );
-                getTask.Wait();
+                removeTask.Wait();
 
                 for (int i = products.Count - 1; i >= 0; --i)
                 {
