@@ -112,12 +112,12 @@ namespace TPUM.Client.Presentation.ViewModel
             this.model.OnProductRemoved += HandleProductRemoved;
         }
 
-        public void HandleProductAdded(Model.ProductAbstract product)
+        public void HandleProductAdded(ProductAbstract product)
         {
             OutputText = "ADDED: [Product] GUID: " + product.GetGuid() + ", Name: " + product.GetName() + ", Price: " + product.GetPrice();
         }
 
-        public void HandleProductRemoved(Model.ProductAbstract product)
+        public void HandleProductRemoved(ProductAbstract product)
         {
             OutputText = "REMOVED: [Product] GUID: " + product.GetGuid() + ", Name: " + product.GetName() + ", Price: " + product.GetPrice();
         }
@@ -134,9 +134,9 @@ namespace TPUM.Client.Presentation.ViewModel
 
         private void ExecuteCommandFindProducts()
         {
-            List<Model.ProductAbstract> products = model.FindProducts(ProductNameInputText);
+            List<ProductAbstract> products = model.FindProducts(ProductNameInputText);
             OutputText = "";
-            foreach (Model.ProductAbstract product in products)
+            foreach (ProductAbstract product in products)
             {
                 string guid = (product.GetGuid()).ToString();
                 string price = (product.GetPrice()).ToString();

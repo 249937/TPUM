@@ -56,6 +56,10 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\TPUM.Server.Data\TPUM.Server.Data.csproj">
+      <Project>{28630810-a278-4053-a33a-61e422a10190}</Project>
+      <Name>TPUM.Server.Data</Name>
+    </ProjectReference>
     <ProjectReference Include="..\TPUM.Server.Logic\TPUM.Server.Logic.csproj">
       <Project>{174a8e0a-682b-4256-8866-dcfc4d88f124}</Project>
       <Name>TPUM.Server.Logic</Name>

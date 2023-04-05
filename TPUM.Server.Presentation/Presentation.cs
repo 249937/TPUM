@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Net;
 using System.Net.WebSockets;
@@ -103,6 +104,8 @@ namespace TPUM.Server.Presentation
             WebSocketConnection webSocketConnectionServer = null;
             Uri uri = new Uri("ws://localhost:1337");
 
+            Logic.ShopServiceAbstract shopService = Logic.ShopServiceAbstract.CreateShopService();
+
             Task serverTask = Task.Run(async () =>
                 {
                     await ServerMainLoop(uri.Port, webSocketConnection =>
@@ -119,22 +122,32 @@ namespace TPUM.Server.Presentation
                                     {
                                         receivedProduct = (ClientServer.Communication.Product)serializer.Deserialize(stream);
                                     }
-                                    Console.WriteLine("[Product] GUID: " + receivedProduct.guid + ", Name: " + receivedProduct.name + ", Price: " + receivedProduct.price);
+                                    Console.WriteLine("Trying to add product with GUID: " + receivedProduct.guid + ", name: " + receivedProduct.name + ", price: " + receivedProduct.price);
+                                    shopService.AddProduct(receivedProduct.name, receivedProduct.price);
                                 }
                                 else if (ClientServer.Communication.Command.Get.Equals(commandData.command))
                                 {
-                                    Console.WriteLine("[COMMAND] GET");
-                                    Guid receivedGuid;
-                                    XmlSerializer serializer = new XmlSerializer(typeof(Guid));
+                                    Console.WriteLine("[COMMAND] FIND");
+                                    string receivedName;
+                                    XmlSerializer serializer = new XmlSerializer(typeof(string));
                                     using (MemoryStream stream = new MemoryStream(commandData.data))
                                     {
-                                        receivedGuid = (Guid)serializer.Deserialize(stream);
+                                        receivedName = (string)serializer.Deserialize(stream);
                                     }
-                                    Console.WriteLine("[Product] GUID: " + receivedGuid);
+                                    Console.WriteLine("Trying to find product with name: " + receivedName);
+                                    Logic.ProductAbstract foundProduct = shopService.FindProduct(receivedName);
                                 }
                                 else if (ClientServer.Communication.Command.GetAll.Equals(commandData.command))
                                 {
-                                    Console.WriteLine("[COMMAND] GET ALL");
+                                    Console.WriteLine("[COMMAND] FIND");
+                                    string receivedName;
+                                    XmlSerializer serializer = new XmlSerializer(typeof(string));
+                                    using (MemoryStream stream = new MemoryStream(commandData.data))
+                                    {
+                                        receivedName = (string)serializer.Deserialize(stream);
+                                    }
+                                    Console.WriteLine("Trying to find all products with name: " + receivedName);
+                                    List<Logic.ProductAbstract> foundProducts = shopService.FindProducts(receivedName);
                                 }
                                 else if (ClientServer.Communication.Command.Remove.Equals(commandData.command))
                                 {
@@ -145,7 +158,8 @@ namespace TPUM.Server.Presentation
                                     {
                                         receivedGuid = (Guid)serializer.Deserialize(stream);
                                     }
-                                    Console.WriteLine("[Product] GUID: " + receivedGuid);
+                                    Console.WriteLine("Trying to remove product with GUID: " + receivedGuid);
+                                    shopService.RemoveProduct(receivedGuid);
                                 }
                             };
                         }

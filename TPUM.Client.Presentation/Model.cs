@@ -55,7 +55,7 @@ namespace TPUM.Client.Presentation.Model
                 {
                     return null;
                 }
-                return new Product(productFound.GetGuid(), productFound.GetName(), productFound.GetPrice()); ;
+                return new Product(productFound.GetGuid(), productFound.GetName(), productFound.GetPrice());
             }
 
             public override List<ProductAbstract> FindProducts(string name)
