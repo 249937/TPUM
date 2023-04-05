@@ -7,44 +7,51 @@ namespace TPUM.Client.Logic.Tests
     [TestClass]
     public class LogicTests
     {
-        private class ProductRepository : Data.ProductRepositoryAbstract
+        private class Data : Client.Data.DataAbstract
         {
-            public override event Action<Data.ProductAbstract> OnProductAdded;
-            public override event Action<Data.ProductAbstract> OnProductRemoved;
+            public override event Action<Client.Data.ProductAbstract> OnProductAdded;
+            public override event Action<Client.Data.ProductAbstract> OnProductRemoved;
 
-            private List<Data.ProductAbstract> products;
+            private List<Client.Data.ProductAbstract> products;
 
-            public ProductRepository()
+            public Data()
             {
-                products = new List<Data.ProductAbstract>();
+                products = new List<Client.Data.ProductAbstract>();
             }
 
-            public override void Add(Data.ProductAbstract product)
+            public override void Add(Client.Data.ProductAbstract product)
             {
                 if (product == null)
                 {
                     throw new ArgumentNullException();
                 }
-                foreach (Data.ProductAbstract existingProduct in products)
+
+                foreach (Client.Data.ProductAbstract existingProduct in products)
                 {
                     if (existingProduct.GetGuid() == product.GetGuid())
                     {
                         return;
                     }
                 }
+
                 products.Add(product);
                 OnProductAdded?.Invoke(product);
             }
 
-            public override Data.ProductAbstract Get(Guid productGuid)
+            public override Client.Data.ProductAbstract Find(string productName)
             {
-                if (Guid.Empty.Equals(productGuid))
+                if (productName == null)
+                {
+                    throw new ArgumentNullException();
+                }
+                if (string.IsNullOrWhiteSpace(productName))
                 {
                     throw new ArgumentException();
                 }
-                foreach (Data.ProductAbstract product in products)
+
+                foreach (Client.Data.ProductAbstract product in products)
                 {
-                    if (product.GetGuid() == productGuid)
+                    if (product.GetName() == productName)
                     {
                         return product;
                     }
@@ -52,9 +59,27 @@ namespace TPUM.Client.Logic.Tests
                 return null;
             }
 
-            public override List<Data.ProductAbstract> GetAll()
+            public override List<Client.Data.ProductAbstract> FindAll(string productName)
             {
-                return products;
+                if (productName == null)
+                {
+                    throw new ArgumentNullException();
+                }
+                if (string.IsNullOrWhiteSpace(productName))
+                {
+                    throw new ArgumentException();
+                }
+
+                List<Client.Data.ProductAbstract> productsFound = new List<Client.Data.ProductAbstract>();
+                foreach (Client.Data.ProductAbstract product in products)
+                {
+                    if (product.GetName() == productName)
+                    {
+                        productsFound.Add(product);
+                    }
+                }
+
+                return productsFound;
             }
 
             public override void Remove(Guid productGuid)
@@ -63,11 +88,12 @@ namespace TPUM.Client.Logic.Tests
                 {
                     throw new ArgumentException();
                 }
+
                 for (int i = products.Count - 1; i >= 0; --i)
                 {
                     if (productGuid.Equals(products[i].GetGuid()))
                     {
-                        Data.ProductAbstract product = products[i];
+                        Client.Data.ProductAbstract product = products[i];
                         products.RemoveAt(i);
                         OnProductRemoved?.Invoke(product);
                     }
@@ -78,7 +104,7 @@ namespace TPUM.Client.Logic.Tests
         [TestMethod]
         public void AddProductWithInvalidNameTest()
         {
-            ShopServiceAbstract shopService = ShopServiceAbstract.CreateShopService(new ProductRepository());
+            ShopServiceAbstract shopService = ShopServiceAbstract.CreateShopService(new Data());
 
             string productName1 = "";
             string productName2 = null;
@@ -91,7 +117,7 @@ namespace TPUM.Client.Logic.Tests
         [TestMethod]
         public void AddProductWithInvalidPrice()
         {
-            ShopServiceAbstract shopService = ShopServiceAbstract.CreateShopService(new ProductRepository());
+            ShopServiceAbstract shopService = ShopServiceAbstract.CreateShopService(new Data());
 
             string productName = "Test Product";
             float productPrice1 = 0.00f;
@@ -104,7 +130,7 @@ namespace TPUM.Client.Logic.Tests
         [TestMethod]
         public void AddFindRemoveTest()
         {
-            ShopServiceAbstract shopService = ShopServiceAbstract.CreateShopService(new ProductRepository());
+            ShopServiceAbstract shopService = ShopServiceAbstract.CreateShopService(new Data());
 
             string productName = "Test Product";
             float productPrice = 5.25f;
@@ -131,7 +157,7 @@ namespace TPUM.Client.Logic.Tests
         [TestMethod]
         public void FindProductsTest()
         {
-            ShopServiceAbstract shopService = ShopServiceAbstract.CreateShopService(new ProductRepository());
+            ShopServiceAbstract shopService = ShopServiceAbstract.CreateShopService(new Data());
 
             string product1Name = "Test Product 1";
             float product1Price = 5.25f;

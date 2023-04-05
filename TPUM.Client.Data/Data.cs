@@ -1,122 +1,167 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
-using System.Net.WebSockets;
-using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
 using System.Xml.Serialization;
 
 namespace TPUM.Client.Data
 {
-    public abstract class WebSocketConnection
+    public abstract class DataAbstract
     {
-        public virtual Action<string> OnMessage
+        private class Data : DataAbstract
         {
-            set;
-            protected get;
-        } = message => { };
+            public override event Action<ProductAbstract> OnProductAdded;
+            public override event Action<ProductAbstract> OnProductRemoved;
 
-        public virtual Action OnClose
-        {
-            set;
-            protected get;
-        } = () => { };
-
-        public virtual Action OnError
-        {
-            set;
-            protected get;
-        } = () => { };
-
-        public async Task SendAsync(ClientServer.Communication.CommandData commandData)
-        {
-            await SendTask(commandData);
-        }
-
-        public abstract Task DisconnectAsync();
-
-        protected abstract Task SendTask(ClientServer.Communication.CommandData commandData);
-    }
-
-    internal static class WebSocketClient
-    {
-        public static async Task<WebSocketConnection> Connect(Uri uri)
-        {
-            ClientWebSocket clientWebSocket = new ClientWebSocket();
-            await clientWebSocket.ConnectAsync(uri, CancellationToken.None);
-            switch (clientWebSocket.State)
+            public Data()
             {
-                case WebSocketState.Open:
-                    return new ClientWebSocketConnection(clientWebSocket);
-                default:
-                    throw new WebSocketException();
-            }
-        }
-
-        private class ClientWebSocketConnection : WebSocketConnection
-        {
-            private ClientWebSocket clientWebSocket = null;
-
-            public ClientWebSocketConnection(ClientWebSocket clientWebSocket)
-            {
-                this.clientWebSocket = clientWebSocket;
-                Task.Factory.StartNew(() => ClientMessageLoop());
             }
 
-            protected override Task SendTask(ClientServer.Communication.CommandData commandData)
+            public override void Add(ProductAbstract product)
             {
-                byte[] serializedData;
-                XmlSerializer serializer = new XmlSerializer(typeof(ClientServer.Communication.CommandData));
-                using (MemoryStream stream = new MemoryStream())
+                if (product == null)
                 {
-                    serializer.Serialize(stream, commandData);
-                    serializedData = stream.ToArray();
+                    throw new ArgumentNullException();
                 }
-                return clientWebSocket.SendAsync(new ArraySegment<byte>(serializedData), WebSocketMessageType.Text, true, CancellationToken.None);
-            }
-
-            public override Task DisconnectAsync()
-            {
-                OnClose?.Invoke();
-                return clientWebSocket.CloseAsync(WebSocketCloseStatus.NormalClosure, "Client Disconnect", CancellationToken.None);
-            }
-
-            private void ClientMessageLoop()
-            {
-                try
+                
+                Task addTask = Task.Run(async () =>
                 {
-                    byte[] buffer = new byte[1024];
-                    while (true)
+                    ClientServer.Communication.Product webSocketProduct = new ClientServer.Communication.Product();
+                    webSocketProduct.guid = product.GetGuid();
+                    webSocketProduct.name = product.GetName();
+                    webSocketProduct.price = product.GetPrice();
+                    byte[] serializedData;
+                    XmlSerializer serializer = new XmlSerializer(typeof(ClientServer.Communication.Product));
+                    using (MemoryStream stream = new MemoryStream())
                     {
-                        ArraySegment<byte> segment = new ArraySegment<byte>(buffer);
-                        WebSocketReceiveResult receiveResult = clientWebSocket.ReceiveAsync(segment, CancellationToken.None).Result;
-                        if (receiveResult.MessageType == WebSocketMessageType.Close)
-                        {
-                            DisconnectAsync().Wait();
-                            return;
-                        }
-                        int count = receiveResult.Count;
-                        while (!receiveResult.EndOfMessage)
-                        {
-                            if (count >= buffer.Length)
-                            {
-                                OnClose?.Invoke();
-                                clientWebSocket.CloseAsync(WebSocketCloseStatus.InvalidPayloadData, "Buffer Overflow", CancellationToken.None).Wait();
-                                return;
-                            }
-                            segment = new ArraySegment<byte>(buffer, count, buffer.Length - count);
-                            receiveResult = clientWebSocket.ReceiveAsync(segment, CancellationToken.None).Result;
-                            count += receiveResult.Count;
-                        }
-                        OnMessage?.Invoke(Encoding.UTF8.GetString(buffer, 0, count));
+                        serializer.Serialize(stream, webSocketProduct);
+                        serializedData = stream.ToArray();
                     }
+                    ClientServer.Communication.CommandData commandData = new ClientServer.Communication.CommandData();
+                    commandData.command = ClientServer.Communication.Command.Add;
+                    commandData.data = serializedData;
+                    ClientServer.Communication.WebSocketConnection webSocketConnectionClient = await WebSocketClient.Connect(new Uri("ws://localhost:1337"));
+                    Task clientSendTask = webSocketConnectionClient.SendAsync(commandData);
+                    clientSendTask.Wait(new TimeSpan(0, 0, 10));
+                    await webSocketConnectionClient?.DisconnectAsync();
                 }
-                catch (Exception)
-                {
-                    OnClose?.Invoke();
-                    clientWebSocket.CloseAsync(WebSocketCloseStatus.InternalServerError, "Internal Server Error", CancellationToken.None).Wait();
-                }
+                );
+                addTask.Wait();
+
+                OnProductAdded?.Invoke(product);
             }
+
+            public override ProductAbstract Find(string productName)
+            {
+                if (productName == null)
+                {
+                    throw new ArgumentNullException();
+                }
+                if (string.IsNullOrWhiteSpace(productName))
+                {
+                    throw new ArgumentException();
+                }
+
+                Task getTask = Task.Run(async () =>
+                {
+                    byte[] serializedData;
+                    XmlSerializer serializer = new XmlSerializer(typeof(string));
+                    using (MemoryStream stream = new MemoryStream())
+                    {
+                        serializer.Serialize(stream, productName);
+                        serializedData = stream.ToArray();
+                    }
+                    ClientServer.Communication.CommandData commandData = new ClientServer.Communication.CommandData();
+                    commandData.command = ClientServer.Communication.Command.Find;
+                    commandData.data = serializedData;
+                    ClientServer.Communication.WebSocketConnection webSocketConnectionClient = await WebSocketClient.Connect(new Uri("ws://localhost:1337"));
+                    Task clientSendTask = webSocketConnectionClient.SendAsync(commandData);
+                    clientSendTask.Wait(new TimeSpan(0, 0, 10));
+                    await webSocketConnectionClient?.DisconnectAsync();
+                }
+                );
+                getTask.Wait();
+
+                return null;
+            }
+
+            public override List<ProductAbstract> FindAll(string productName)
+            {
+                if (productName == null)
+                {
+                    throw new ArgumentNullException();
+                }
+                if (string.IsNullOrWhiteSpace(productName))
+                {
+                    throw new ArgumentException();
+                }
+
+                Task getAllTask = Task.Run(async () =>
+                {
+                    byte[] serializedData;
+                    XmlSerializer serializer = new XmlSerializer(typeof(string));
+                    using (MemoryStream stream = new MemoryStream())
+                    {
+                        serializer.Serialize(stream, productName);
+                        serializedData = stream.ToArray();
+                    }
+                    ClientServer.Communication.CommandData commandData = new ClientServer.Communication.CommandData();
+                    commandData.command = ClientServer.Communication.Command.FindAll;
+                    commandData.data = serializedData;
+                    ClientServer.Communication.WebSocketConnection webSocketConnectionClient = await WebSocketClient.Connect(new Uri("ws://localhost:1337"));
+                    Task clientSendTask = webSocketConnectionClient.SendAsync(commandData);
+                    clientSendTask.Wait(new TimeSpan(0, 0, 10));
+                    await webSocketConnectionClient?.DisconnectAsync();
+                }
+                );
+                getAllTask.Wait();
+
+                return new List<ProductAbstract>();
+            }
+
+            public override void Remove(Guid productGuid)
+            {
+                if (Guid.Empty.Equals(productGuid))
+                {
+                    throw new ArgumentException();
+                }
+
+                Task removeTask = Task.Run(async () =>
+                {
+                    byte[] serializedData;
+                    XmlSerializer serializer = new XmlSerializer(typeof(Guid));
+                    using (MemoryStream stream = new MemoryStream())
+                    {
+                        serializer.Serialize(stream, productGuid);
+                        serializedData = stream.ToArray();
+                    }
+                    ClientServer.Communication.CommandData commandData = new ClientServer.Communication.CommandData();
+                    commandData.command = ClientServer.Communication.Command.Remove;
+                    commandData.data = serializedData;
+                    ClientServer.Communication.WebSocketConnection webSocketConnectionClient = await WebSocketClient.Connect(new Uri("ws://localhost:1337"));
+                    Task clientSendTask = webSocketConnectionClient.SendAsync(commandData);
+                    clientSendTask.Wait(new TimeSpan(0, 0, 10));
+                    await webSocketConnectionClient?.DisconnectAsync();
+                }
+                );
+                removeTask.Wait();
+            }
+        }
+
+        public abstract event Action<ProductAbstract> OnProductAdded;
+        public abstract event Action<ProductAbstract> OnProductRemoved;
+
+        public abstract void Add(ProductAbstract product);
+
+        public abstract ProductAbstract Find(string productName);
+
+        public abstract List<ProductAbstract> FindAll(string productName);
+
+        public abstract void Remove(Guid productGuid);
+
+        public static DataAbstract CreateData()
+        {
+            return new Data();
         }
     }
 }

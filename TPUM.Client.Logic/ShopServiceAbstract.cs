@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using TPUM.Client.Data;
 
 namespace TPUM.Client.Logic
 {
@@ -11,14 +10,14 @@ namespace TPUM.Client.Logic
             public override event Action<ProductAbstract> OnProductAdded;
             public override event Action<ProductAbstract> OnProductRemoved;
 
-            private ProductRepositoryAbstract productRepository = null;
+            private Data.DataAbstract data = null;
 
-            public ShopService(ProductRepositoryAbstract productRepository) 
+            public ShopService(Data.DataAbstract data) 
             {
-                this.productRepository = productRepository;
+                this.data = data;
 
-                this.productRepository.OnProductAdded += HandleProductAdded;
-                this.productRepository.OnProductRemoved += HandleProductRemoved;
+                this.data.OnProductAdded += HandleProductAdded;
+                this.data.OnProductRemoved += HandleProductRemoved;
             }
 
             public override void AddProduct(string name, float price)
@@ -40,50 +39,46 @@ namespace TPUM.Client.Logic
                 product.SetName(name);
                 product.SetPrice(price);
 
-                productRepository.Add(product);
+                data.Add(product);
             }
 
-            public override ProductAbstract FindProduct(string name)
+            public override ProductAbstract FindProduct(string productName)
             {
-                if (name == null)
+                if (productName == null)
                 {
                     throw new ArgumentNullException();
                 }
-                if (string.IsNullOrWhiteSpace(name))
+                if (string.IsNullOrWhiteSpace(productName))
                 {
                     throw new ArgumentException();
                 }
 
-                foreach (ProductData product in productRepository.GetAll())
+                Data.ProductAbstract productData = data.Find(productName);
+                if (productData == null)
                 {
-                    if (name.Equals(product.GetName()))
-                    {
-                        return new Product(product.GetGuid(), product.GetName(), product.GetPrice());
-                    }
+                    return null;
                 }
-                return null;
+                return new Product(productData.GetGuid(), productData.GetName(), productData.GetPrice());
             }
 
-            public override List<ProductAbstract> FindProducts(string name)
+            public override List<ProductAbstract> FindProducts(string productName)
             {
-                if (name == null)
+                if (productName == null)
                 {
                     throw new ArgumentNullException();
                 }
-                if (string.IsNullOrWhiteSpace(name))
+                if (string.IsNullOrWhiteSpace(productName))
                 {
                     throw new ArgumentException();
                 }
 
-                List<ProductAbstract> productsFound = new List<ProductAbstract>();
-                foreach (ProductData product in productRepository.GetAll())
+                List<Data.ProductAbstract> productsData = data.FindAll(productName);
+                List<ProductAbstract> products = new List<ProductAbstract>();
+                foreach (Data.ProductAbstract productData in productsData)
                 {
-                    if (name.Equals(product.GetName()))
-                    {
-                        productsFound.Add(new Product(product.GetGuid(), product.GetName(), product.GetPrice()));
-                    }
+                    products.Add(new Product(productData.GetGuid(), productData.GetName(), productData.GetPrice()));
                 }
-                return productsFound;
+                return products;
             }
 
             public override void RemoveProduct(Guid productGuid)
@@ -93,7 +88,7 @@ namespace TPUM.Client.Logic
                     throw new ArgumentException();
                 }
 
-                productRepository.Remove(productGuid);
+                data.Remove(productGuid);
             }
 
             public void HandleProductAdded(Data.ProductAbstract product)
@@ -110,26 +105,26 @@ namespace TPUM.Client.Logic
         public abstract event Action<ProductAbstract> OnProductAdded;
         public abstract event Action<ProductAbstract> OnProductRemoved;
 
-        public abstract void AddProduct(string name, float price);
+        public abstract void AddProduct(string productName, float productPrice);
 
-        public abstract ProductAbstract FindProduct(string name);
+        public abstract ProductAbstract FindProduct(string productName);
 
-        public abstract List<ProductAbstract> FindProducts(string name);
+        public abstract List<ProductAbstract> FindProducts(string productName);
 
         public abstract void RemoveProduct(Guid productGuid);
 
         public static ShopServiceAbstract CreateShopService()
         {
-            return new ShopService(ProductRepositoryAbstract.CreateProductRepository());
+            return new ShopService(Data.DataAbstract.CreateData());
         }
 
-        internal static ShopServiceAbstract CreateShopService(ProductRepositoryAbstract productRepository)
+        internal static ShopServiceAbstract CreateShopService(Data.DataAbstract data)
         {
-            if (productRepository == null)
+            if (data == null)
             {
                 return CreateShopService();
             }
-            return new ShopService(productRepository);
+            return new ShopService(data);
         }
     }
 }

@@ -77,6 +77,7 @@ namespace TPUM.Server.Presentation.Tests
                 {
                     throw new ArgumentNullException();
                 }
+
                 foreach (Logic.ProductAbstract existingProduct in products)
                 {
                     if (existingProduct.GetGuid() == product.GetGuid())
@@ -84,6 +85,8 @@ namespace TPUM.Server.Presentation.Tests
                         return;
                     }
                 }
+                products.Add(product);
+                OnProductAdded?.Invoke(product);
             }
 
             public override Logic.ProductAbstract FindProduct(string name)
@@ -96,6 +99,7 @@ namespace TPUM.Server.Presentation.Tests
                 {
                     throw new ArgumentException();
                 }
+
                 foreach (Logic.ProductAbstract product in products)
                 {
                     if (name.Equals(product.GetName()))

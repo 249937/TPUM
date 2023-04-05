@@ -77,6 +77,7 @@ namespace TPUM.Client.Presentation.Tests
                 {
                     throw new ArgumentNullException();
                 }
+
                 foreach (Logic.ProductAbstract existingProduct in products)
                 {
                     if (existingProduct.GetGuid() == product.GetGuid())
