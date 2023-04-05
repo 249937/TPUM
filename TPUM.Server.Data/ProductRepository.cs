@@ -55,7 +55,7 @@ namespace TPUM.Server.Data
                 return products;
             }
 
-            public override void Remove(Guid productGuid)
+            public override ProductAbstract Remove(Guid productGuid)
             {
                 if (Guid.Empty.Equals(productGuid))
                 {
@@ -68,8 +68,10 @@ namespace TPUM.Server.Data
                         ProductAbstract product = products[i];
                         products.RemoveAt(i);
                         OnProductRemoved?.Invoke(product);
+                        return product;
                     }
                 }
+                return null;
             }
         }
 
@@ -82,7 +84,7 @@ namespace TPUM.Server.Data
 
         public abstract List<ProductAbstract> GetAll();
 
-        public abstract void Remove(Guid productGuid);
+        public abstract ProductAbstract Remove(Guid productGuid);
 
         public static ProductRepositoryAbstract CreateProductRepository()
         {

@@ -132,7 +132,7 @@ namespace TPUM.Server.Presentation.Tests
                 return productsFound;
             }
 
-            public override void RemoveProduct(Guid productGuid)
+            public override Logic.ProductAbstract RemoveProduct(Guid productGuid)
             {
                 if (Guid.Empty.Equals(productGuid))
                 {
@@ -145,8 +145,10 @@ namespace TPUM.Server.Presentation.Tests
                         Logic.ProductAbstract product = products[i];
                         products.RemoveAt(i);
                         OnProductRemoved?.Invoke(product);
+                        return product;
                     }
                 }
+                return null;
             }
         }
     }

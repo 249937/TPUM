@@ -2,7 +2,7 @@
 
 namespace TPUM.ClientServer.Communication
 {
-    public struct Product
+    public class Product
     {
         public Guid guid;
         public string name;

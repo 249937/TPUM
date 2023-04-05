@@ -31,49 +31,133 @@ namespace TPUM.Server.Presentation
                         {
                             Console.WriteLine("[COMMAND] ADD");
                             ClientServer.Communication.Product receivedProduct;
-                            XmlSerializer serializer = new XmlSerializer(typeof(ClientServer.Communication.Product));
+                            XmlSerializer productSerializer = new XmlSerializer(typeof(ClientServer.Communication.Product));
                             using (MemoryStream stream = new MemoryStream(commandData.data))
                             {
-                                receivedProduct = (ClientServer.Communication.Product)serializer.Deserialize(stream);
+                                receivedProduct = (ClientServer.Communication.Product)productSerializer.Deserialize(stream);
                             }
-                            Console.WriteLine("Trying to add product with GUID: " + receivedProduct.guid + ", name: " + receivedProduct.name + ", price: " + receivedProduct.price);
+                            Console.WriteLine("Trying to add product with name: " + receivedProduct.name + ", price: " + receivedProduct.price);
                             shopService.AddProduct(receivedProduct.name, receivedProduct.price);
+                            ClientServer.Communication.CommandData responseData;
+                            responseData.command = ClientServer.Communication.Command.Add;
+                            using (MemoryStream stream = new MemoryStream())
+                            {
+                                productSerializer.Serialize(stream, receivedProduct);
+                                responseData.data = stream.ToArray();
+                            }
+                            Task serverSendTask = webSocketConnectionServer.SendAsync(responseData);
+                            serverSendTask.Wait(new TimeSpan(0, 0, 10));
+                            Console.WriteLine("Added product with name: " + receivedProduct.name + ", price: " + receivedProduct.price);
                         }
                         else if (ClientServer.Communication.Command.Find.Equals(commandData.command))
                         {
                             Console.WriteLine("[COMMAND] FIND");
                             string receivedName;
-                            XmlSerializer serializer = new XmlSerializer(typeof(string));
+                            XmlSerializer stringSerializer = new XmlSerializer(typeof(string));
                             using (MemoryStream stream = new MemoryStream(commandData.data))
                             {
-                                receivedName = (string)serializer.Deserialize(stream);
+                                receivedName = (string)stringSerializer.Deserialize(stream);
                             }
                             Console.WriteLine("Trying to find product with name: " + receivedName);
                             Logic.ProductAbstract foundProduct = shopService.FindProduct(receivedName);
+                            ClientServer.Communication.CommandData responseData;
+                            responseData.command = ClientServer.Communication.Command.Find;
+                            XmlSerializer productSerializer = new XmlSerializer(typeof(ClientServer.Communication.Product));
+                            using (MemoryStream stream = new MemoryStream())
+                            {
+                                if (foundProduct != null)
+                                {
+                                    ClientServer.Communication.Product product = new ClientServer.Communication.Product();
+                                    product.guid = foundProduct.GetGuid();
+                                    product.name = foundProduct.GetName();
+                                    product.price = foundProduct.GetPrice();
+                                    productSerializer.Serialize(stream, product);
+                                    Console.WriteLine("Found product with name: " + foundProduct.GetName() + ", price: " + foundProduct.GetPrice() + ", GUID: " + foundProduct.GetGuid());
+                                }
+                                else
+                                {
+                                    productSerializer.Serialize(stream, null);
+                                    Console.WriteLine("Could not find product with name: " + receivedName);
+                                }
+                                responseData.data = stream.ToArray();
+                            }
+                            Task serverSendTask = webSocketConnectionServer.SendAsync(responseData);
+                            serverSendTask.Wait(new TimeSpan(0, 0, 10));
                         }
                         else if (ClientServer.Communication.Command.FindAll.Equals(commandData.command))
                         {
                             Console.WriteLine("[COMMAND] FIND ALL");
                             string receivedName;
-                            XmlSerializer serializer = new XmlSerializer(typeof(string));
+                            XmlSerializer stringSerializer = new XmlSerializer(typeof(string));
                             using (MemoryStream stream = new MemoryStream(commandData.data))
                             {
-                                receivedName = (string)serializer.Deserialize(stream);
+                                receivedName = (string)stringSerializer.Deserialize(stream);
                             }
                             Console.WriteLine("Trying to find all products with name: " + receivedName);
                             List<Logic.ProductAbstract> foundProducts = shopService.FindProducts(receivedName);
+                            ClientServer.Communication.CommandData responseData;
+                            responseData.command = ClientServer.Communication.Command.FindAll;
+                            XmlSerializer productSerializer = new XmlSerializer(typeof(ClientServer.Communication.Product));
+                            if (foundProducts.Count > 0)
+                            {
+                                foreach (Logic.ProductAbstract foundProduct in foundProducts)
+                                {
+                                    if (foundProduct != null)
+                                    {
+                                        using (MemoryStream stream = new MemoryStream())
+                                        {
+                                            ClientServer.Communication.Product product = new ClientServer.Communication.Product();
+                                            product.guid = foundProduct.GetGuid();
+                                            product.name = foundProduct.GetName();
+                                            product.price = foundProduct.GetPrice();
+                                            productSerializer.Serialize(stream, product);
+                                            responseData.data = stream.ToArray();
+                                        }
+                                        Task serverSendTask = webSocketConnectionServer.SendAsync(responseData);
+                                        serverSendTask.Wait(new TimeSpan(0, 0, 10));
+                                        Console.WriteLine("Found product with name: " + foundProduct.GetName() + ", price: " + foundProduct.GetPrice() + ", GUID: " + foundProduct.GetGuid());
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                Console.WriteLine("Could not find product with name: " + receivedName);
+                            }
                         }
                         else if (ClientServer.Communication.Command.Remove.Equals(commandData.command))
                         {
                             Console.WriteLine("[COMMAND] REMOVE");
                             Guid receivedGuid;
-                            XmlSerializer serializer = new XmlSerializer(typeof(Guid));
+                            XmlSerializer guidSerializer = new XmlSerializer(typeof(Guid));
                             using (MemoryStream stream = new MemoryStream(commandData.data))
                             {
-                                receivedGuid = (Guid)serializer.Deserialize(stream);
+                                receivedGuid = (Guid)guidSerializer.Deserialize(stream);
                             }
                             Console.WriteLine("Trying to remove product with GUID: " + receivedGuid);
-                            shopService.RemoveProduct(receivedGuid);
+                            Logic.ProductAbstract removedProduct = shopService.RemoveProduct(receivedGuid);
+                            ClientServer.Communication.CommandData responseData;
+                            responseData.command = ClientServer.Communication.Command.Remove;
+                            XmlSerializer productSerializer = new XmlSerializer(typeof(ClientServer.Communication.Product));
+                            using (MemoryStream stream = new MemoryStream())
+                            {
+                                if (removedProduct != null)
+                                {
+                                    ClientServer.Communication.Product product = new ClientServer.Communication.Product();
+                                    product.guid = removedProduct.GetGuid();
+                                    product.name = removedProduct.GetName();
+                                    product.price = removedProduct.GetPrice();
+                                    productSerializer.Serialize(stream, product);
+                                    Console.WriteLine("Removed product with name: " + removedProduct.GetName() + ", price: " + removedProduct.GetPrice() + ", GUID: " + removedProduct.GetGuid());
+                                }
+                                else
+                                {
+                                    productSerializer.Serialize(stream, null);
+                                    Console.WriteLine("Could not remove product with GUID: " + receivedGuid);
+                                }
+                                responseData.data = stream.ToArray();
+                            }
+                            Task serverSendTask = webSocketConnectionServer.SendAsync(responseData);
+                            serverSendTask.Wait(new TimeSpan(0, 0, 10));
                         }
                     };
                 }

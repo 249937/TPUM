@@ -86,14 +86,19 @@ namespace TPUM.Server.Logic
                 return productsFound;
             }
 
-            public override void RemoveProduct(Guid productGuid)
+            public override ProductAbstract RemoveProduct(Guid productGuid)
             {
                 if (Guid.Empty.Equals(productGuid))
                 {
                     throw new ArgumentException();
                 }
 
-                productRepository.Remove(productGuid);
+                Data.ProductAbstract removedProductData = productRepository.Remove(productGuid);
+                if (removedProductData != null)
+                {
+                    return new Product(removedProductData.GetGuid(), removedProductData.GetName(), removedProductData.GetPrice());
+                }
+                return null;
             }
 
             public void HandleProductAdded(Data.ProductAbstract product)
@@ -116,7 +121,7 @@ namespace TPUM.Server.Logic
 
         public abstract List<ProductAbstract> FindProducts(string name);
 
-        public abstract void RemoveProduct(Guid productGuid);
+        public abstract ProductAbstract RemoveProduct(Guid productGuid);
 
         public static ShopServiceAbstract CreateShopService()
         {
