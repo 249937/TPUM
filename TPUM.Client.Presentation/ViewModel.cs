@@ -124,23 +124,47 @@ namespace TPUM.Client.Presentation.ViewModel
 
         private void ExecuteCommandAddProduct()
         {
-            model.AddProduct(ProductNameInputText, float.Parse(ProductPriceInputText));
+            try
+            {
+                model.AddProduct(ProductNameInputText, float.Parse(ProductPriceInputText));
+            }
+            catch (Exception)
+            {
+                OutputText = "An error occurred while adding the product.";
+            }
         }
 
         private void ExecuteCommandRemoveProduct()
         {
-            model.RemoveProduct(new Guid(ProductGuidInputText));
+            try
+            {
+                model.RemoveProduct(new Guid(ProductGuidInputText));
+            }
+            catch (Exception)
+            {
+                OutputText = "An error occurred while removing the product.";
+            }
         }
 
         private void ExecuteCommandFindProducts()
         {
-            List<ProductAbstract> products = model.FindProducts(ProductNameInputText);
-            OutputText = "";
-            foreach (ProductAbstract product in products)
+            try
             {
-                string guid = (product.GetGuid()).ToString();
-                string price = (product.GetPrice()).ToString();
-                OutputText = OutputText + "FOUND: [Product] GUID: " + guid + ", Name: " + product.GetName() + ", Price: " + price + "\n";
+                List<ProductAbstract> products = model.FindProducts(ProductNameInputText);
+                OutputText = "";
+                if (products != null)
+                {
+                    foreach (ProductAbstract product in products)
+                    {
+                        string guid = (product.GetGuid()).ToString();
+                        string price = (product.GetPrice()).ToString();
+                        OutputText = OutputText + "FOUND: [Product] GUID: " + guid + ", Name: " + product.GetName() + ", Price: " + price + "\n";
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                OutputText = "An error occurred while searching for products.";
             }
         }
 
