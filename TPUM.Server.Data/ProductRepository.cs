@@ -23,14 +23,17 @@ namespace TPUM.Server.Data
                 {
                     throw new ArgumentNullException();
                 }
-                foreach (ProductAbstract existingProduct in products)
+                lock (products)
                 {
-                    if (existingProduct.GetGuid() == product.GetGuid())
+                    foreach (ProductAbstract existingProduct in products)
                     {
-                        return;
+                        if (existingProduct.GetGuid() == product.GetGuid())
+                        {
+                            return;
+                        }
                     }
+                    products.Add(product);
                 }
-                products.Add(product);
                 OnProductAdded?.Invoke(product);
             }
 
@@ -40,11 +43,14 @@ namespace TPUM.Server.Data
                 {
                     throw new ArgumentException();
                 }
-                foreach (ProductAbstract product in products)
+                lock (products)
                 {
-                    if (product.GetGuid() == productGuid)
+                    foreach (ProductAbstract product in products)
                     {
-                        return product;
+                        if (product.GetGuid() == productGuid)
+                        {
+                            return product;
+                        }
                     }
                 }
                 return null;
@@ -61,15 +67,23 @@ namespace TPUM.Server.Data
                 {
                     throw new ArgumentException();
                 }
-                for (int i = products.Count - 1; i >= 0; --i)
+                ProductAbstract productRemoved = null;
+                lock (products)
                 {
-                    if (productGuid.Equals(products[i].GetGuid()))
+                    for (int i = products.Count - 1; i >= 0; --i)
                     {
-                        ProductAbstract product = products[i];
-                        products.RemoveAt(i);
-                        OnProductRemoved?.Invoke(product);
-                        return product;
+                        if (productGuid.Equals(products[i].GetGuid()))
+                        {
+                            productRemoved = products[i];
+                            products.RemoveAt(i);
+                            break;
+                        }
                     }
+                }
+                if (productRemoved != null)
+                {
+                    OnProductRemoved?.Invoke(productRemoved);
+                    return productRemoved;
                 }
                 return null;
             }
