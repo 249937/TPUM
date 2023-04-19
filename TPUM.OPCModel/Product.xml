@@ -1,0 +1,14 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ModelDesign xmlns:TPUM="http://cas.eu/UA/CommServer/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:OpcUa="http://opcfoundation.org/UA/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:uax="http://opcfoundation.org/UA/2008/02/Types.xsd" TargetNamespace="http://cas.eu/UA/CommServer/" xmlns="http://opcfoundation.org/UA/ModelDesign.xsd">
+  <Namespaces>
+    <Namespace Name="TPUM" Prefix="TPUM" XmlPrefix="TPUM">http://cas.eu/UA/CommServer/</Namespace>
+    <Namespace Name="OpcUa" Prefix="Opc.Ua" XmlNamespace="http://opcfoundation.org/UA/2008/02/Types.xsd" XmlPrefix="OpcUa">http://opcfoundation.org/UA/</Namespace>
+  </Namespaces>
+  <ObjectType SymbolicName="TPUM:Product">
+    <Children>
+      <Property SymbolicName="TPUM:Guid" DataType="OpcUa:Guid" />
+      <Property SymbolicName="TPUM:Name" DataType="OpcUa:String" />
+      <Property SymbolicName="TPUM:Price" DataType="OpcUa:Float" />
+    </Children>
+  </ObjectType>
+</ModelDesign>

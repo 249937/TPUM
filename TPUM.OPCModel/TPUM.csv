@@ -1,0 +1,4 @@
+Product,1,ObjectType
+Product_Guid,2,Variable
+Product_Name,3,Variable
+Product_Price,4,Variable
