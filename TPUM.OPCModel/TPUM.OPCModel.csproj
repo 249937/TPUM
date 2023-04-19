@@ -204,28 +204,28 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Product\TPUM.Classes.cs" />
-    <Compile Include="Product\TPUM.Constants.cs" />
-    <Compile Include="Product\TPUM.DataTypes.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="TPUM\TPUM.Classes.cs" />
+    <Compile Include="TPUM\TPUM.Constants.cs" />
+    <Compile Include="TPUM\TPUM.DataTypes.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
     <None Include="packages.config" />
     <None Include="Product.csv" />
     <None Include="Product.uamdsl" />
-    <None Include="Product\TPUM.NodeIds.csv" />
-    <None Include="Product\TPUM.PredefinedNodes.uanodes" />
-    <None Include="Product\TPUM.Types.bsd" />
-    <None Include="Product\TPUM.Types.xsd">
+    <None Include="TPUM\TPUM.NodeIds.csv" />
+    <None Include="TPUM\TPUM.PredefinedNodes.uanodes" />
+    <None Include="TPUM\TPUM.Types.bsd" />
+    <None Include="TPUM\TPUM.Types.xsd">
       <SubType>Designer</SubType>
     </None>
   </ItemGroup>
   <ItemGroup>
     <Content Include="Product.xml" />
-    <Content Include="Product\TPUM.NodeSet.xml" />
-    <Content Include="Product\TPUM.NodeSet2.xml" />
-    <Content Include="Product\TPUM.PredefinedNodes.xml" />
+    <Content Include="TPUM\TPUM.NodeSet.xml" />
+    <Content Include="TPUM\TPUM.NodeSet2.xml" />
+    <Content Include="TPUM\TPUM.PredefinedNodes.xml" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
