@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Xml.Serialization;
 
@@ -8,21 +9,27 @@ namespace TPUM.Server.Presentation
 {
     internal class Presentation
     {
+        internal static WebSocketServer webSocketServer = null;
+
+        private static CancellationTokenSource cancellationTokenSource = null;
+
         private static void Main(string[] args)
         {
-            StartServer();
+            Task serverTask = Task.Run(async () => await StartServer());
+            serverTask.Wait();
         }
 
-        internal static void StartServer()
+        internal static async Task StartServer()
         {
             ClientServer.Communication.WebSocketConnection webSocketConnectionServer = null;
+            cancellationTokenSource = new CancellationTokenSource();
             Uri uri = new Uri("ws://localhost:1337");
 
             Logic.ShopServiceAbstract shopService = Logic.ShopServiceAbstract.CreateShopService();
 
             Task serverTask = Task.Run(async () =>
             {
-                await WebSocketServer.ServerMainLoop(uri.Port, webSocketConnection =>
+                await WebSocketServer.StartServerLoop(uri.Port, webSocketConnection =>
                 {
                     webSocketConnectionServer = webSocketConnection;
                     webSocketConnectionServer.OnMessage = (commandData) =>
@@ -160,13 +167,24 @@ namespace TPUM.Server.Presentation
                             serverSendTask.Wait(new TimeSpan(0, 0, 10));
                         }
                     };
-                }
-                );
+                }, cancellationTokenSource.Token);
                 await webSocketConnectionServer?.DisconnectAsync();
             }
             );
+            await serverTask;
+            cancellationTokenSource.Dispose();
+        }
 
-            serverTask.Wait();
+        internal static void StopServer()
+        {
+            try
+            {
+                cancellationTokenSource.Cancel();
+            }
+            catch (ObjectDisposedException)
+            {
+            }
+            WebSocketServer.StopWebSocketServer();
         }
     }
 }

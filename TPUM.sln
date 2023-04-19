@@ -39,6 +39,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TPUM.Server.Logic.Tests", "
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TPUM.Server.Presentation.Tests", "TPUM.Server.Presentation.Tests\TPUM.Server.Presentation.Tests.csproj", "{F470B46E-2A6A-4CF7-A80C-F50D6C3317D6}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TPUM.ClientServer.Tests", "TPUM.ClientServer.Tests\TPUM.ClientServer.Tests.csproj", "{D6C87EEB-9FED-4960-BC7E-4CCBA00D772B}"
+EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TPUM.OPCModel", "TPUM.OPCModel\TPUM.OPCModel.csproj", "{4DBF84F9-34E4-4296-8D26-9B5D8A92B526}"
 EndProject
 Global
@@ -99,6 +101,10 @@ Global
 		{F470B46E-2A6A-4CF7-A80C-F50D6C3317D6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F470B46E-2A6A-4CF7-A80C-F50D6C3317D6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F470B46E-2A6A-4CF7-A80C-F50D6C3317D6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D6C87EEB-9FED-4960-BC7E-4CCBA00D772B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D6C87EEB-9FED-4960-BC7E-4CCBA00D772B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D6C87EEB-9FED-4960-BC7E-4CCBA00D772B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D6C87EEB-9FED-4960-BC7E-4CCBA00D772B}.Release|Any CPU.Build.0 = Release|Any CPU
 		{4DBF84F9-34E4-4296-8D26-9B5D8A92B526}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{4DBF84F9-34E4-4296-8D26-9B5D8A92B526}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4DBF84F9-34E4-4296-8D26-9B5D8A92B526}.Release|Any CPU.ActiveCfg = Release|Any CPU

@@ -10,23 +10,45 @@ namespace TPUM.Server.Presentation
 {
     internal class WebSocketServer
     {
-        internal static async Task ServerMainLoop(int port, Action<ClientServer.Communication.WebSocketConnection> OnConnection)
+        internal static HttpListener httpListener = new HttpListener();
+
+        internal static void StopWebSocketServer()
+        {
+            if (httpListener != null)
+            {
+                httpListener.Abort();
+                httpListener.Close();
+            }
+        }
+
+        internal static async Task StartServerLoop(int port, Action<ClientServer.Communication.WebSocketConnection> OnConnection, CancellationToken cancellationToken)
         {
             Uri uri = new Uri($@"http://localhost:{port}/");
-            HttpListener httpListener = new HttpListener();
+
+            httpListener = new HttpListener();
             httpListener.Prefixes.Add(uri.ToString());
             httpListener.Start();
-            while (true)
+            while (!cancellationToken.IsCancellationRequested)
             {
-                HttpListenerContext httpListenerContext = await httpListener.GetContextAsync();
-                if (!httpListenerContext.Request.IsWebSocketRequest)
+                try
                 {
-                    httpListenerContext.Response.StatusCode = 400;
-                    httpListenerContext.Response.Close();
+                    HttpListenerContext httpListenerContext = await httpListener.GetContextAsync();
+                    if (!httpListenerContext.Request.IsWebSocketRequest)
+                    {
+                        httpListenerContext.Response.StatusCode = 400;
+                        httpListenerContext.Response.Close();
+                    }
+                    if (!cancellationToken.IsCancellationRequested)
+                    {
+                        HttpListenerWebSocketContext httpListenerWebSocketContext = await httpListenerContext.AcceptWebSocketAsync(null);
+                        OnConnection?.Invoke(new ServerWebSocketConnection(httpListenerWebSocketContext.WebSocket));
+                    }
                 }
-                HttpListenerWebSocketContext httpListenerWebSocketContext = await httpListenerContext.AcceptWebSocketAsync(null);
-                OnConnection?.Invoke(new ServerWebSocketConnection(httpListenerWebSocketContext.WebSocket));
+                catch (Exception)
+                {
+                }
             }
+            httpListener.Close();
         }
 
         internal class ServerWebSocketConnection : ClientServer.Communication.WebSocketConnection
